@@ -6,29 +6,29 @@ import { authApi } from "./api";
 
 // ==================== Protected routes ====================
 // Require authentication before rendering
-const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = authApi.isAuthenticated();
+// const ProtectedRoute = ({ children }) => {
+//   const isAuthenticated = authApi.isAuthenticated();
 
-  if (!isAuthenticated) {
-    // Redirect unauthenticated users to the login screen
-    return <Navigate to="/login" replace />;
-  }
+//   if (!isAuthenticated) {
+//     // Redirect unauthenticated users to the login screen
+//     return <Navigate to="/login" replace />;
+//   }
 
-  return children;
-};
+//   return children;
+// };
 
-// ==================== Public routes ====================
-// Redirect authenticated users back to the home page
-const PublicRoute = ({ children }) => {
-  const isAuthenticated = authApi.isAuthenticated();
+// // ==================== Public routes ====================
+// // Redirect authenticated users back to the home page
+// const PublicRoute = ({ children }) => {
+//   const isAuthenticated = authApi.isAuthenticated();
 
-  if (isAuthenticated) {
-    // Already signed in; send the user home
-    return <Navigate to="/" replace />;
-  }
+//   if (isAuthenticated) {
+//     // Already signed in; send the user home
+//     return <Navigate to="/" replace />;
+//   }
 
-  return children;
-};
+//   return children;
+// };
 
 // ==================== Router configuration ====================
 export const router = createBrowserRouter([
@@ -39,11 +39,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true, // Default route: /
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Home />,
       },
       // Additional routes can be added here
       // {
@@ -68,11 +64,7 @@ export const router = createBrowserRouter([
   // Login page (standalone, no layout)
   {
     path: "/login",
-    element: (
-      <PublicRoute>
-        <Login />
-      </PublicRoute>
-    ),
+    element: <Login />,
   },
 
   // 404 page (optional, add later)
