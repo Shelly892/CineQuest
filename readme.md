@@ -24,12 +24,10 @@ flowchart TD
     <i><u>Shuangning Wei</u></i>]
     
     E[Rating Service Port: 3003
-    • Circuit Breaker & Retry & Timeout
     • Mongodb & Redis
     <i><u>Ze Li</u></i>]
     
     F[Sign Service Port: 3004
-    • Circuit Breaker & Retry & Timeout
     • PostgreSQL & Redis
     <i><u>Ze Li</u></i>]
     
