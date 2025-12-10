@@ -21,8 +21,8 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final AchievementNotificationService achievementNotificationService;
     
-    public RatingResponse createRating(RatingRequest request) {
-        log.info("Creating rating for user {} and movie {}", request.getUserId(), request.getMovieId());
+    public RatingResponse createRating(String userId, RatingRequest request) {
+        log.info("Creating rating for user {} and movie {}", userId, request.getMovieId());
         
         // Validate score range
         if (request.getScore() < 1 || request.getScore() > 10) {
@@ -31,7 +31,7 @@ public class RatingService {
         
         // Check if user has already rated this movie
         Optional<Rating> existingRating = ratingRepository.findByUserIdAndMovieId(
-            request.getUserId(), 
+            userId, 
             request.getMovieId()
         );
         
@@ -40,7 +40,7 @@ public class RatingService {
         }
         
         Rating rating = new Rating();
-        rating.setUserId(request.getUserId());
+        rating.setUserId(userId);
         rating.setMovieId(request.getMovieId());
         rating.setScore(request.getScore());
         rating.setComment(request.getComment());
@@ -51,9 +51,9 @@ public class RatingService {
         
         // Notify Achievement Service
         try {
-            long totalRatings = ratingRepository.countByUserId(request.getUserId());
+            long totalRatings = ratingRepository.countByUserId(userId);
             achievementNotificationService.notifyRatingSubmitted(
-                request.getUserId(), 
+                userId, 
                 request.getMovieId(), 
                 totalRatings
             );
@@ -65,10 +65,10 @@ public class RatingService {
         return mapToResponse(savedRating);
     }
     
-    public RatingResponse updateRating(String ratingId, RatingUpdateRequest request) {
-        log.info("Updating rating with ID: {}", ratingId);
+    public RatingResponse updateRating(String userId, RatingRequest request) {
+        log.info("Updating rating for user {} and movie {}", userId, request.getMovieId());
         
-        Rating rating = ratingRepository.findById(ratingId)
+        Rating rating = ratingRepository.findByUserIdAndMovieId(userId, request.getMovieId())
             .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
         
         // Validate score range if provided
@@ -89,14 +89,13 @@ public class RatingService {
         return mapToResponse(updatedRating);
     }
     
-    public void deleteRating(String ratingId) {
-        log.info("Deleting rating with ID: {}", ratingId);
+    public void deleteRating(String userId, Integer movieId) {
+        log.info("Deleting rating for user {} and movie {}", userId, movieId);
         
-        if (!ratingRepository.existsById(ratingId)) {
-            throw new IllegalArgumentException("Rating not found");
-        }
+        Rating rating = ratingRepository.findByUserIdAndMovieId(userId, movieId)
+            .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
         
-        ratingRepository.deleteById(ratingId);
+        ratingRepository.deleteById(rating.getId());
         log.info("Rating deleted successfully");
     }
 
