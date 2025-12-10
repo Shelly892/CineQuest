@@ -10,7 +10,7 @@
 ## Tech Stack
 *   **Language:** Java (SpringBoot)
 *   **Database:** MongoDB
-*   **Communication:** gRPC Client (calls Achievement Service)
+*   **Communication:** gRPC Client (calls AchievementGrpcClient)
 
 ## Database Schema (MongoDB)
 **Collection:** `ratings`
