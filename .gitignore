@@ -45,6 +45,7 @@ mvnw.cmd
 
 ### temporary files ###
 *~
+.aider*
 
 ### data volume ###
 data_volume
