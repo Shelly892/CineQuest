@@ -1,1 +1,57 @@
-# for developers to test this project in docker compose first
+version: '3.8'
+services:
+  sign-postgres:
+    image: postgres:17.6
+    environment:
+      POSTGRES_DB: sign
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - sign_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sign"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  rating-mongodb:
+    image: mongo:7.0.5
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: rating-service
+    volumes:
+      - rating_mongodb_data:/data/db
+      - rating_mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+
+volumes:
+  sign_postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/postgres-inventory/db
+  rating_mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-order/db
+  rating_mongodb_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-order/configdb
