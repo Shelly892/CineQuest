@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: movie-service
+
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms # 连接超时时间：2 秒
+      lettuce: # Lettuce 是 Redis 客户端
+        pool: # 连接池配置
+          max-active: 8 # 最大活跃连接数
+          max-idle: 8 # 最大空闲连接数
+          min-idle: 0 # 最小空闲连接数
+
+server:
+  port: 3002
+
+# TMDB API 配置
+tmdb:
+  api:
+    base-url: https://api.themoviedb.org/3
+    key: ${TMDB_API_KEY}
+    image-base-url: https://image.tmdb.org/t/p
+
+# 缓存配置（秒）
+cache:
+  ttl:
+    popular: 3600 # 热门电影缓存 1 小时
+    details: 7200 # 电影详情缓存 2 小时
+    search: 1800 # 搜索结果缓存 30 分钟
+
+# Resilience4j Circuit Breaker 配置
+resilience4j:
+  circuitbreaker:
+    instances:
+      tmdbService: # 为 TMDB API 调用配置熔断器
+        register-health-indicator: true # 注册健康检查
+        sliding-window-size: 10 # 滑动窗口大小：10 次请求
+        minimum-number-of-calls: 5 # 最少调用 5 次才开始计算
+        permitted-number-of-calls-in-half-open-state: 3 # 半开状态允许 3 次测试
+        wait-duration-in-open-state: 30s # 熔断后等待 30 秒再尝试
+        failure-rate-threshold: 50 # 失败率 50% 触发熔断
+        slow-call-duration-threshold: 2s # 超过 2 秒算慢调用
+        slow-call-rate-threshold: 50 # 慢调用率 50% 触发熔断
+
+  # Retry 配置
+  retry:
+    instances:
+      tmdbService:
+        max-attempts: 3 # 最多重试 3 次
+        wait-duration: 1s # 每次重试等待 1 秒
+        enable-exponential-backoff: true # 启用指数退避
+        exponential-backoff-multiplier: 2 # 每次等待时间 × 2
+
+  # Timeout 配置
+  timelimiter:
+    instances:
+      tmdbService:
+        timeout-duration: 3s
+
+# Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# 日志配置
+logging:
+  level:
+    com.cinequest.movieservice: DEBUG
+    org.springframework.web: INFO
