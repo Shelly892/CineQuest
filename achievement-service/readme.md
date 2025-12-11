@@ -31,7 +31,7 @@
 ## Functional Requirements & Logic
 
 ### 1. gRPC: UpdateSignCount
-*   **Input:** `userId` (String), `count` (Int)
+*   **Input:** `userId` (String), `count` (Int), `userEmail` (String), `userName` (String)
 *   **Tier Logic (Hardcoded):**
     *   **Count == 1:**
         *   Badge: "Sign Novice"
@@ -55,7 +55,7 @@
     3.  **Produce Kafka Message** (Topic: `achievement_unlocked`).
 
 ### 2. gRPC: UpdateRatingCount
-*   **Input:** `userId` (String), `count` (Int)
+*   **Input:** `userId` (String), `count` (Int), `userEmail` (String), `userName` (String)
 *   **Tier Logic (Hardcoded):**
     *   **Count == 1:**
         *   Badge: "Commentator"
@@ -84,6 +84,8 @@
 ```json
 {
   "user_id": "user_123_abc",
+  "user_email": "user_123_abc@example.com",
+  "user_name": "user_123_abc",
   "badge_name": "Sign Novice",
   "badge_level": "Bronze",
   "description": "Signed in 1 days",
