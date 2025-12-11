@@ -68,14 +68,19 @@ flowchart TD
 %%    H -.-> I
 ```
 
-
+---
 ## (Optional) For developer local test and setup using docker compose
-#### Skip this, if you are simply trying to run this project
+#### To start all services in docker compose
+```bash
+docker compose -p cinequest up -d
+```
+#### To stop all services in docker compose
+```bash
+docker compose -p cinequest down
+```
+
+#### To build all services images and push to docker hub rapidly
 **Build Images**
 ```bash
 $ export DOCKER_ACCOUNT=YOUR_DOCKER_ACCOUNT && export DOCKER_PASSWORD=YOUR_DOCKER_PASSWORD && mvn spring-boot:build-image -DskipTests
-```
-**Start all services**
-```bash
-docker compose -p cinequest up -d
 ```
