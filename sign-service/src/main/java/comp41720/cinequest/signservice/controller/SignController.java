@@ -17,11 +17,14 @@ public class SignController {
     private final SignService signService;
     
     @PostMapping
-    public ResponseEntity<SignInResponse> signIn(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<SignInResponse> signIn(
+            @RequestHeader("X-User-Id") String userId,
+            @RequestHeader("X-User-Email") String userEmail,
+            @RequestHeader("X-User-Name") String userName) {
         log.info("POST /api/sign - Sign-in request for user {}", userId);
 
         try {
-            SignInResponse response = signService.signIn(userId);
+            SignInResponse response = signService.signIn(userId, userEmail, userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalStateException e) {
             log.error("Sign-in error: {}", e.getMessage());

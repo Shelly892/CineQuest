@@ -15,14 +15,16 @@ public class AchievementGrpcClient {
     @GrpcClient("achievement-service")
     private AchievementServiceGrpc.AchievementServiceBlockingStub achievementStub;
 
-    public void updateSignCount(String userId, long totalSignCount) {
-        log.info("Notifying Achievement Service: userId={}, totalSignCount={}", 
-                 userId, totalSignCount);
+    public void updateSignCount(String userId, long totalSignCount, String userEmail, String userName) {
+        log.info("Notifying Achievement Service: userId={}, totalSignCount={}, userEmail={}, userName={}", 
+                 userId, totalSignCount, userEmail, userName);
         
         try {
             UpdateSignCountRequest request = UpdateSignCountRequest.newBuilder()
                 .setUserId(userId)
                 .setTotalSignCount(totalSignCount)
+                .setUserEmail(userEmail)
+                .setUserName(userName)
                 .build();
             
             Empty response = achievementStub.updateSignCount(request);

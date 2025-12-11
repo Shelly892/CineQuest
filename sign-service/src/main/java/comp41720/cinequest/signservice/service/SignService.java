@@ -19,7 +19,7 @@ public class SignService {
     private final UserSignInRepository userSignInRepository;
     private final AchievementGrpcClient achievementGrpcClient;
 
-    public SignInResponse signIn(String userId) {
+    public SignInResponse signIn(String userId, String userEmail, String userName) {
         log.info("Processing sign-in for user {}", userId);
 
         LocalDate today = LocalDate.now(ZoneId.of("UTC"));
@@ -36,7 +36,7 @@ public class SignService {
             totalSignCount = userSignInRepository.countByUserId(userId);
 
             try {
-                achievementGrpcClient.updateSignCount(userId, totalSignCount);
+                achievementGrpcClient.updateSignCount(userId, totalSignCount, userEmail, userName);
             } catch (Exception e) {
                 log.error("Failed to notify Achievement Service", e);
             }

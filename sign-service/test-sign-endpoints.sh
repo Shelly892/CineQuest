@@ -10,21 +10,27 @@ echo ""
 echo "1. Sign-in for user 'user123' (first time)"
 curl -X POST http://localhost:3004/api/sign \
   -H "Content-Type: application/json" \
-  -H "X-User-Id: user123"
+  -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe"
 echo -e "\n"
 
 # 2. Try to sign in again on the same day (should fail)
 echo "2. Attempting duplicate sign-in for user 'user123' (should fail)"
 curl -X POST http://localhost:3004/api/sign \
   -H "Content-Type: application/json" \
-  -H "X-User-Id: user123"
+  -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe"
 echo -e "\n"
 
 # 3. Sign in for a different user
 echo "3. Sign-in for user 'user456' (first time)"
 curl -X POST http://localhost:3004/api/sign \
   -H "Content-Type: application/json" \
-  -H "X-User-Id: user456"
+  -H "X-User-Id: user456" \
+  -H "X-User-Email: user456@example.com" \
+  -H "X-User-Name: Jane Smith"
 echo -e "\n"
 
 echo "=== Tests Complete ==="
