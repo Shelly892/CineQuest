@@ -14,9 +14,7 @@ public class NotificationConsumer {
 
     private final EmailService emailService;
 
-    /**
-     * 监听成就解锁事件
-     */
+
     @KafkaListener(topics = "achievement_unlocked")
     public void handleAchievementEvent(AchievementUnlocked event) {
         log.info("Received achievement event: {}", event);
@@ -41,7 +39,7 @@ public class NotificationConsumer {
             log.info("Achievement email sent to {}", event.getUserEmail());
         } catch (Exception e) {
             log.error("Failed to process achievement event: {}", e.getMessage(), e);
-            throw e; // 重新抛出异常，让 Kafka 重试机制处理
+            throw e; 
         }
     }
 }
