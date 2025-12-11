@@ -17,20 +17,31 @@ public class NotificationConsumer {
     /**
      * 监听成就解锁事件
      */
-    @KafkaListener(topics = "achievement_unlocked", groupId = "notification-group")
+    @KafkaListener(topics = "achievement_unlocked")
     public void handleAchievementEvent(AchievementUnlocked event) {
-        log.info(" Received achievement event: {}", event);
+        log.info("Received achievement event: {}", event);
 
         try {
+            // 检查必要字段是否存在
+            if (event.getUserEmail() == null || event.getUserName() == null || 
+                event.getBadgeName() == null || event.getDescription() == null ||
+                event.getBadgeLevel() == null || event.getEarnedAt() == null) {
+                log.warn("Received event with missing required fields: {}", event);
+                return;
+            }
+
             emailService.sendAchievementEmail(
                     event.getUserEmail().toString(),
                     event.getUserName().toString(),
                     event.getBadgeName().toString(),
-                    event.getDescription().toString()
+                    event.getDescription().toString(),
+                    event.getBadgeLevel().toString(),
+                    event.getEarnedAt().toString()
             );
-            log.info(" Achievement email sent to {}", event.getUserEmail());
+            log.info("Achievement email sent to {}", event.getUserEmail());
         } catch (Exception e) {
-            log.error(" Failed to process achievement event: {}", e.getMessage(), e);
+            log.error("Failed to process achievement event: {}", e.getMessage(), e);
+            throw e; // 重新抛出异常，让 Kafka 重试机制处理
         }
     }
 }

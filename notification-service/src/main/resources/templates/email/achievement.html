@@ -76,6 +76,15 @@
         <p class="description" th:text="${description}">
           Achievement description
         </p>
+        <div style="text-align: center; margin: 20px 0">
+          <p style="color: #666; margin: 5px 0">
+            <strong>Level:</strong>
+            <span th:text="${badgeLevel}">Badge Level</span>
+          </p>
+          <p style="color: #666; margin: 5px 0">
+            <strong>Earned At:</strong> <span th:text="${earnedAt}">Date</span>
+          </p>
+        </div>
         <div class="message">
           <p>
             <strong

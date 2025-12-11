@@ -82,11 +82,13 @@ public class EmailService {
     /**
      * 发送成就解锁邮件
      */
-    public void sendAchievementEmail(String to, String username, String achievementName, String description) {
+    public void sendAchievementEmail(String to, String username, String achievementName, String description, String badgeLevel, String earnedAt) {
         Map<String, Object> variables = Map.of(
                 "username", username,
                 "achievementName", achievementName,
                 "description", description,
+                "badgeLevel", badgeLevel,
+                "earnedAt", earnedAt,
                 "message", "You've successfully unlocked this achievement! Keep up the great work!"
         );
 

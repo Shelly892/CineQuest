@@ -68,12 +68,14 @@ public class NotificationController {
             @RequestParam String email,
             @RequestParam String username,
             @RequestParam String achievementName,
-            @RequestParam String description
+            @RequestParam String description,
+            @RequestParam String badgeLevel,
+            @RequestParam String earnedAt
     ) {
         log.info(" Achievement email request for user: {}", username);
 
         try {
-            emailService.sendAchievementEmail(email, username, achievementName, description);
+            emailService.sendAchievementEmail(email, username, achievementName, description, badgeLevel, earnedAt);
 
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
