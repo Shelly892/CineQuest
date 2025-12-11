@@ -13,4 +13,6 @@ message NotifyRatingRequest {
   string user_id = 1;
   int32 movie_id = 2;
   int64 total_ratings = 3;
+  string user_email = 4;
+  string user_name = 5;
 }
