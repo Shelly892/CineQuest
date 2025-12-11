@@ -22,7 +22,7 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final AchievementGrpcClient achievementGrpcClient;
 
-    public RatingResponse createRating(String userId, RatingRequest request) {
+    public RatingResponse createRating(String userId, RatingRequest request, String userEmail, String userName) {
         log.info("Creating rating for user {} and movie {}", userId, request.getMovieId());
 
         // Validate score range
@@ -56,7 +56,9 @@ public class RatingService {
             achievementGrpcClient.notifyRatingSubmitted(
                 userId,
                 request.getMovieId(),
-                totalRatings
+                totalRatings,
+                userEmail,
+                userName
             );
         } catch (Exception e) {
             log.error("Failed to notify Achievement Service", e);

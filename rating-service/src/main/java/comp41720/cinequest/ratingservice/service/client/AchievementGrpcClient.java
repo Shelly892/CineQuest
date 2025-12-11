@@ -15,15 +15,17 @@ public class AchievementGrpcClient {
     @GrpcClient("achievement-service")
     private AchievementServiceGrpc.AchievementServiceBlockingStub achievementStub;
 
-    public void notifyRatingSubmitted(String userId, Integer movieId, long totalRatings) {
-        log.info("Notifying Achievement Service: userId={}, movieId={}, totalRatings={}", 
-                 userId, movieId, totalRatings);
+    public void notifyRatingSubmitted(String userId, Integer movieId, long totalRatings, String userEmail, String userName) {
+        log.info("Notifying Achievement Service: userId={}, movieId={}, totalRatings={}, userEmail={}, userName={}", 
+                 userId, movieId, totalRatings, userEmail, userName);
         
         try {
             NotifyRatingRequest request = NotifyRatingRequest.newBuilder()
                 .setUserId(userId)
                 .setMovieId(movieId)
                 .setTotalRatings(totalRatings)
+                .setUserEmail(userEmail)
+                .setUserName(userName)
                 .build();
             
             Empty response = achievementStub.notifyRatingSubmitted(request);

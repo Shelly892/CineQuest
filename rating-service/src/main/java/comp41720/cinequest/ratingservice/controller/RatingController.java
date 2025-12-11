@@ -25,12 +25,14 @@ public class RatingController {
     @PostMapping
     public ResponseEntity<RatingResponse> createRating(
             @RequestHeader("X-User-Id") String userId,
+            @RequestHeader("X-User-Email") String userEmail,
+            @RequestHeader("X-User-Name") String userName,
             @RequestBody RatingRequest request) {
         log.info("POST /api/ratings - Creating rating for user {} and movie {}",
             userId, request.getMovieId());
 
         try {
-            RatingResponse response = ratingService.createRating(userId, request);
+            RatingResponse response = ratingService.createRating(userId, request, userEmail, userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException | IllegalStateException e) {
             log.error("Validation error: {}", e.getMessage());
