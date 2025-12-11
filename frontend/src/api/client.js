@@ -132,7 +132,7 @@ apiClient.interceptors.response.use(
 // ==================== Exports ====================
 export default apiClient;
 
-// Convenience helpers mirroring the Axios API
+
 export const api = {
   get: (url, config) => apiClient.get(url, config),
   post: (url, data, config) => apiClient.post(url, data, config),
