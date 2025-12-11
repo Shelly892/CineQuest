@@ -1,4 +1,4 @@
-### 📁 1. Sign Service (`sign-service/README.md`)
+### 📁 1. Sign Service
 
 ```markdown
 # Sign Service

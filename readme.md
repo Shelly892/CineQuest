@@ -67,3 +67,15 @@ flowchart TD
 %%    G -.-> I
 %%    H -.-> I
 ```
+
+
+## (Optional) For developer local test and setup using docker compose
+#### Skip this, if you are simply trying to run this project
+**Build Images**
+```bash
+$ export DOCKER_ACCOUNT=YOUR_DOCKER_ACCOUNT && export DOCKER_PASSWORD=YOUR_DOCKER_PASSWORD && mvn spring-boot:build-image -DskipTests
+```
+**Start all services**
+```bash
+docker compose -p cinequest up -d
+```
