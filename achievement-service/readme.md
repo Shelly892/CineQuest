@@ -23,7 +23,7 @@
   "badge_name": "Sign Novice",
   "badge_type": "SIGN",        // Enum: "SIGN" or "RATING"
   "badge_level": "Bronze",     // Enum: "Bronze", "Silver", "Gold", "Platinum" (For UI image selection)
-  "description": "Signed in 3 days",
+  "description": "Signed in 1 day",
   "earned_at": "ISODate('2023-12-10T10:05:00Z')"
 }
 ```
@@ -33,10 +33,10 @@
 ### 1. gRPC: UpdateSignCount
 *   **Input:** `userId` (String), `count` (Int)
 *   **Tier Logic (Hardcoded):**
-    *   **Count == 3:**
+    *   **Count == 1:**
         *   Badge: "Sign Novice"
         *   Level: "Bronze"
-        *   Description: "Signed in 3 days"
+        *   Description: "Signed in 1 day"
     *   **Count == 10:**
         *   Badge: "Sign Regular"
         *   Level: "Silver"
@@ -57,10 +57,10 @@
 ### 2. gRPC: UpdateRatingCount
 *   **Input:** `userId` (String), `count` (Int)
 *   **Tier Logic (Hardcoded):**
-    *   **Count == 3:**
+    *   **Count == 1:**
         *   Badge: "Commentator"
         *   Level: "Bronze"
-        *   Description: "Posted 3 ratings"
+        *   Description: "Posted 1 ratings"
     *   **Count == 10:**
         *   Badge: "Critic"
         *   Level: "Silver"
@@ -86,7 +86,7 @@
   "user_id": "user_123_abc",
   "badge_name": "Sign Novice",
   "badge_level": "Bronze",
-  "description": "Signed in 3 days",
+  "description": "Signed in 1 days",
   "timestamp": "2023-12-10T10:05:00Z"
 }
 ```

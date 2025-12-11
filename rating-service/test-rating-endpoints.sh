@@ -62,14 +62,8 @@ curl -X PUT http://localhost:3003/api/ratings \
   }'
 echo -e "\n"
 
-# 8. Delete a rating
-echo "8. Deleting rating for user 'user123' and movie '680'"
-curl -X DELETE "http://localhost:3003/api/ratings?movieId=680" \
-  -H "X-User-Id: user123"
-echo -e "\n"
-
-# 9. Try to create an invalid rating (score out of range)
-echo "9. Testing validation - invalid score (should fail)"
+# 8. Try to create an invalid rating (score out of range)
+echo "8. Testing validation - invalid score (should fail)"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
@@ -80,8 +74,8 @@ curl -X POST http://localhost:3003/api/ratings \
   }'
 echo -e "\n"
 
-# 10. Try to create a duplicate rating (should fail)
-echo "10. Testing duplicate rating (should fail)"
+# 9. Try to create a duplicate rating (should fail)
+echo "9. Testing duplicate rating (should fail)"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
@@ -90,6 +84,14 @@ curl -X POST http://localhost:3003/api/ratings \
     "score": 7,
     "comment": "This should fail as rating already exists"
   }'
+echo -e "\n"
+
+# 10. Delete a rating
+echo "10. Deleting rating for user 'user123' and movie '680', movie '550'"
+curl -X DELETE "http://localhost:3003/api/ratings?movieId=680" \
+  -H "X-User-Id: user123"
+curl -X DELETE "http://localhost:3003/api/ratings?movieId=550" \
+  -H "X-User-Id: user123"
 echo -e "\n"
 
 echo "=== Tests Complete ==="
