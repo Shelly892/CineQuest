@@ -4,6 +4,8 @@
   "namespace": "comp41720.cinequest.events",
   "fields": [
     { "name": "userId", "type": "string" },
+    { "name": "userEmail", "type": "string" },
+    { "name": "userName", "type": "string" },
     { "name": "badgeName", "type": "string" },
     { "name": "badgeLevel", "type": "string" },
     { "name": "description", "type": "string" },

@@ -20,21 +20,23 @@ public class AchievementService {
     private final UserBadgeRepository userBadgeRepository;
     private final KafkaTemplate<String, AchievementUnlocked> kafkaTemplate;
     
-    public void processSignCount(String userId, long totalSignCount) {
-        log.info("Processing sign count for userId={}, count={}", userId, totalSignCount);
+    public void processSignCount(String userId, long totalSignCount, String userEmail, String userName) {
+        log.info("Processing sign count for userId={}, count={}, userEmail={}, userName={}", 
+                 userId, totalSignCount, userEmail, userName);
         
         BadgeDefinition badge = determineSignBadge(totalSignCount);
         if (badge != null) {
-            awardBadge(userId, badge, UserBadge.BadgeType.SIGN);
+            awardBadge(userId, badge, UserBadge.BadgeType.SIGN, userEmail, userName);
         }
     }
     
-    public void processRatingCount(String userId, long totalRatings) {
-        log.info("Processing rating count for userId={}, count={}", userId, totalRatings);
+    public void processRatingCount(String userId, long totalRatings, String userEmail, String userName) {
+        log.info("Processing rating count for userId={}, count={}, userEmail={}, userName={}", 
+                 userId, totalRatings, userEmail, userName);
         
         BadgeDefinition badge = determineRatingBadge(totalRatings);
         if (badge != null) {
-            awardBadge(userId, badge, UserBadge.BadgeType.RATING);
+            awardBadge(userId, badge, UserBadge.BadgeType.RATING, userEmail, userName);
         }
     }
     
@@ -67,7 +69,8 @@ public class AchievementService {
         return null;
     }
     
-    private void awardBadge(String userId, BadgeDefinition badgeDef, UserBadge.BadgeType badgeType) {
+    private void awardBadge(String userId, BadgeDefinition badgeDef, UserBadge.BadgeType badgeType, 
+                           String userEmail, String userName) {
         // Check if badge already exists (idempotency)
         Optional<UserBadge> existing = userBadgeRepository.findByUserIdAndBadgeName(userId, badgeDef.name);
         
@@ -89,13 +92,16 @@ public class AchievementService {
         userBadgeRepository.save(badge);
         log.info("Badge '{}' awarded to userId={}", badgeDef.name, userId);
         
-        // Publish Kafka event
-        publishAchievementUnlocked(userId, badgeDef, now);
+        // Publish Kafka event with user email and name
+        publishAchievementUnlocked(userId, badgeDef, now, userEmail, userName);
     }
     
-    private void publishAchievementUnlocked(String userId, BadgeDefinition badgeDef, Instant earnedAt) {
+    private void publishAchievementUnlocked(String userId, BadgeDefinition badgeDef, Instant earnedAt,
+                                           String userEmail, String userName) {
         AchievementUnlocked event = AchievementUnlocked.newBuilder()
             .setUserId(userId)
+            .setUserEmail(userEmail)
+            .setUserName(userName)
             .setBadgeName(badgeDef.name)
             .setBadgeLevel(badgeDef.level.name())
             .setDescription(badgeDef.description)
@@ -103,7 +109,8 @@ public class AchievementService {
             .build();
         
         kafkaTemplate.send("achievement_unlocked", userId, event);
-        log.info("Published achievement_unlocked event for userId={}, badge={}", userId, badgeDef.name);
+        log.info("Published achievement_unlocked event for userId={}, badge={}, userEmail={}, userName={}", 
+                 userId, badgeDef.name, userEmail, userName);
     }
     
     private static class BadgeDefinition {

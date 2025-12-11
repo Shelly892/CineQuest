@@ -13,10 +13,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2124221496509125803L;
+  private static final long serialVersionUID = -2306463114266537033L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AchievementUnlocked\",\"namespace\":\"comp41720.cinequest.events\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"badgeName\",\"type\":\"string\"},{\"name\":\"badgeLevel\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"earnedAt\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AchievementUnlocked\",\"namespace\":\"comp41720.cinequest.events\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"userEmail\",\"type\":\"string\"},{\"name\":\"userName\",\"type\":\"string\"},{\"name\":\"badgeName\",\"type\":\"string\"},{\"name\":\"badgeLevel\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"earnedAt\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -73,6 +73,8 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   }
 
   private java.lang.CharSequence userId;
+  private java.lang.CharSequence userEmail;
+  private java.lang.CharSequence userName;
   private java.lang.CharSequence badgeName;
   private java.lang.CharSequence badgeLevel;
   private java.lang.CharSequence description;
@@ -88,13 +90,17 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   /**
    * All-args constructor.
    * @param userId The new value for userId
+   * @param userEmail The new value for userEmail
+   * @param userName The new value for userName
    * @param badgeName The new value for badgeName
    * @param badgeLevel The new value for badgeLevel
    * @param description The new value for description
    * @param earnedAt The new value for earnedAt
    */
-  public AchievementUnlocked(java.lang.CharSequence userId, java.lang.CharSequence badgeName, java.lang.CharSequence badgeLevel, java.lang.CharSequence description, java.lang.CharSequence earnedAt) {
+  public AchievementUnlocked(java.lang.CharSequence userId, java.lang.CharSequence userEmail, java.lang.CharSequence userName, java.lang.CharSequence badgeName, java.lang.CharSequence badgeLevel, java.lang.CharSequence description, java.lang.CharSequence earnedAt) {
     this.userId = userId;
+    this.userEmail = userEmail;
+    this.userName = userName;
     this.badgeName = badgeName;
     this.badgeLevel = badgeLevel;
     this.description = description;
@@ -112,10 +118,12 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return userId;
-    case 1: return badgeName;
-    case 2: return badgeLevel;
-    case 3: return description;
-    case 4: return earnedAt;
+    case 1: return userEmail;
+    case 2: return userName;
+    case 3: return badgeName;
+    case 4: return badgeLevel;
+    case 5: return description;
+    case 6: return earnedAt;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -126,10 +134,12 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: userId = (java.lang.CharSequence)value$; break;
-    case 1: badgeName = (java.lang.CharSequence)value$; break;
-    case 2: badgeLevel = (java.lang.CharSequence)value$; break;
-    case 3: description = (java.lang.CharSequence)value$; break;
-    case 4: earnedAt = (java.lang.CharSequence)value$; break;
+    case 1: userEmail = (java.lang.CharSequence)value$; break;
+    case 2: userName = (java.lang.CharSequence)value$; break;
+    case 3: badgeName = (java.lang.CharSequence)value$; break;
+    case 4: badgeLevel = (java.lang.CharSequence)value$; break;
+    case 5: description = (java.lang.CharSequence)value$; break;
+    case 6: earnedAt = (java.lang.CharSequence)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -149,6 +159,40 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    */
   public void setUserId(java.lang.CharSequence value) {
     this.userId = value;
+  }
+
+  /**
+   * Gets the value of the 'userEmail' field.
+   * @return The value of the 'userEmail' field.
+   */
+  public java.lang.CharSequence getUserEmail() {
+    return userEmail;
+  }
+
+
+  /**
+   * Sets the value of the 'userEmail' field.
+   * @param value the value to set.
+   */
+  public void setUserEmail(java.lang.CharSequence value) {
+    this.userEmail = value;
+  }
+
+  /**
+   * Gets the value of the 'userName' field.
+   * @return The value of the 'userName' field.
+   */
+  public java.lang.CharSequence getUserName() {
+    return userName;
+  }
+
+
+  /**
+   * Sets the value of the 'userName' field.
+   * @param value the value to set.
+   */
+  public void setUserName(java.lang.CharSequence value) {
+    this.userName = value;
   }
 
   /**
@@ -261,6 +305,8 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     implements org.apache.avro.data.RecordBuilder<AchievementUnlocked> {
 
     private java.lang.CharSequence userId;
+    private java.lang.CharSequence userEmail;
+    private java.lang.CharSequence userName;
     private java.lang.CharSequence badgeName;
     private java.lang.CharSequence badgeLevel;
     private java.lang.CharSequence description;
@@ -281,21 +327,29 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.badgeName)) {
-        this.badgeName = data().deepCopy(fields()[1].schema(), other.badgeName);
+      if (isValidValue(fields()[1], other.userEmail)) {
+        this.userEmail = data().deepCopy(fields()[1].schema(), other.userEmail);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.badgeLevel)) {
-        this.badgeLevel = data().deepCopy(fields()[2].schema(), other.badgeLevel);
+      if (isValidValue(fields()[2], other.userName)) {
+        this.userName = data().deepCopy(fields()[2].schema(), other.userName);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.description)) {
-        this.description = data().deepCopy(fields()[3].schema(), other.description);
+      if (isValidValue(fields()[3], other.badgeName)) {
+        this.badgeName = data().deepCopy(fields()[3].schema(), other.badgeName);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
-      if (isValidValue(fields()[4], other.earnedAt)) {
-        this.earnedAt = data().deepCopy(fields()[4].schema(), other.earnedAt);
+      if (isValidValue(fields()[4], other.badgeLevel)) {
+        this.badgeLevel = data().deepCopy(fields()[4].schema(), other.badgeLevel);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
+      }
+      if (isValidValue(fields()[5], other.description)) {
+        this.description = data().deepCopy(fields()[5].schema(), other.description);
+        fieldSetFlags()[5] = other.fieldSetFlags()[5];
+      }
+      if (isValidValue(fields()[6], other.earnedAt)) {
+        this.earnedAt = data().deepCopy(fields()[6].schema(), other.earnedAt);
+        fieldSetFlags()[6] = other.fieldSetFlags()[6];
       }
     }
 
@@ -309,21 +363,29 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.badgeName)) {
-        this.badgeName = data().deepCopy(fields()[1].schema(), other.badgeName);
+      if (isValidValue(fields()[1], other.userEmail)) {
+        this.userEmail = data().deepCopy(fields()[1].schema(), other.userEmail);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.badgeLevel)) {
-        this.badgeLevel = data().deepCopy(fields()[2].schema(), other.badgeLevel);
+      if (isValidValue(fields()[2], other.userName)) {
+        this.userName = data().deepCopy(fields()[2].schema(), other.userName);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.description)) {
-        this.description = data().deepCopy(fields()[3].schema(), other.description);
+      if (isValidValue(fields()[3], other.badgeName)) {
+        this.badgeName = data().deepCopy(fields()[3].schema(), other.badgeName);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.earnedAt)) {
-        this.earnedAt = data().deepCopy(fields()[4].schema(), other.earnedAt);
+      if (isValidValue(fields()[4], other.badgeLevel)) {
+        this.badgeLevel = data().deepCopy(fields()[4].schema(), other.badgeLevel);
         fieldSetFlags()[4] = true;
+      }
+      if (isValidValue(fields()[5], other.description)) {
+        this.description = data().deepCopy(fields()[5].schema(), other.description);
+        fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.earnedAt)) {
+        this.earnedAt = data().deepCopy(fields()[6].schema(), other.earnedAt);
+        fieldSetFlags()[6] = true;
       }
     }
 
@@ -368,6 +430,86 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
+      * Gets the value of the 'userEmail' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getUserEmail() {
+      return userEmail;
+    }
+
+
+    /**
+      * Sets the value of the 'userEmail' field.
+      * @param value The value of 'userEmail'.
+      * @return This builder.
+      */
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setUserEmail(java.lang.CharSequence value) {
+      validate(fields()[1], value);
+      this.userEmail = value;
+      fieldSetFlags()[1] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'userEmail' field has been set.
+      * @return True if the 'userEmail' field has been set, false otherwise.
+      */
+    public boolean hasUserEmail() {
+      return fieldSetFlags()[1];
+    }
+
+
+    /**
+      * Clears the value of the 'userEmail' field.
+      * @return This builder.
+      */
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserEmail() {
+      userEmail = null;
+      fieldSetFlags()[1] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'userName' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getUserName() {
+      return userName;
+    }
+
+
+    /**
+      * Sets the value of the 'userName' field.
+      * @param value The value of 'userName'.
+      * @return This builder.
+      */
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setUserName(java.lang.CharSequence value) {
+      validate(fields()[2], value);
+      this.userName = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'userName' field has been set.
+      * @return True if the 'userName' field has been set, false otherwise.
+      */
+    public boolean hasUserName() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'userName' field.
+      * @return This builder.
+      */
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserName() {
+      userName = null;
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'badgeName' field.
       * @return The value.
       */
@@ -382,9 +524,9 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return This builder.
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeName(java.lang.CharSequence value) {
-      validate(fields()[1], value);
+      validate(fields()[3], value);
       this.badgeName = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[3] = true;
       return this;
     }
 
@@ -393,7 +535,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return True if the 'badgeName' field has been set, false otherwise.
       */
     public boolean hasBadgeName() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[3];
     }
 
 
@@ -403,7 +545,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeName() {
       badgeName = null;
-      fieldSetFlags()[1] = false;
+      fieldSetFlags()[3] = false;
       return this;
     }
 
@@ -422,9 +564,9 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return This builder.
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeLevel(java.lang.CharSequence value) {
-      validate(fields()[2], value);
+      validate(fields()[4], value);
       this.badgeLevel = value;
-      fieldSetFlags()[2] = true;
+      fieldSetFlags()[4] = true;
       return this;
     }
 
@@ -433,7 +575,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return True if the 'badgeLevel' field has been set, false otherwise.
       */
     public boolean hasBadgeLevel() {
-      return fieldSetFlags()[2];
+      return fieldSetFlags()[4];
     }
 
 
@@ -443,7 +585,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeLevel() {
       badgeLevel = null;
-      fieldSetFlags()[2] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -462,9 +604,9 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return This builder.
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setDescription(java.lang.CharSequence value) {
-      validate(fields()[3], value);
+      validate(fields()[5], value);
       this.description = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -473,7 +615,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return True if the 'description' field has been set, false otherwise.
       */
     public boolean hasDescription() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[5];
     }
 
 
@@ -483,7 +625,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearDescription() {
       description = null;
-      fieldSetFlags()[3] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -502,9 +644,9 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return This builder.
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setEarnedAt(java.lang.CharSequence value) {
-      validate(fields()[4], value);
+      validate(fields()[6], value);
       this.earnedAt = value;
-      fieldSetFlags()[4] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -513,7 +655,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @return True if the 'earnedAt' field has been set, false otherwise.
       */
     public boolean hasEarnedAt() {
-      return fieldSetFlags()[4];
+      return fieldSetFlags()[6];
     }
 
 
@@ -523,7 +665,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearEarnedAt() {
       earnedAt = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -533,10 +675,12 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       try {
         AchievementUnlocked record = new AchievementUnlocked();
         record.userId = fieldSetFlags()[0] ? this.userId : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.badgeName = fieldSetFlags()[1] ? this.badgeName : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.badgeLevel = fieldSetFlags()[2] ? this.badgeLevel : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.description = fieldSetFlags()[3] ? this.description : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.earnedAt = fieldSetFlags()[4] ? this.earnedAt : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.userEmail = fieldSetFlags()[1] ? this.userEmail : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.userName = fieldSetFlags()[2] ? this.userName : (java.lang.CharSequence) defaultValue(fields()[2]);
+        record.badgeName = fieldSetFlags()[3] ? this.badgeName : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.badgeLevel = fieldSetFlags()[4] ? this.badgeLevel : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.description = fieldSetFlags()[5] ? this.description : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.earnedAt = fieldSetFlags()[6] ? this.earnedAt : (java.lang.CharSequence) defaultValue(fields()[6]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -571,6 +715,10 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   {
     out.writeString(this.userId);
 
+    out.writeString(this.userEmail);
+
+    out.writeString(this.userName);
+
     out.writeString(this.badgeName);
 
     out.writeString(this.badgeLevel);
@@ -588,6 +736,10 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     if (fieldOrder == null) {
       this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
 
+      this.userEmail = in.readString(this.userEmail instanceof Utf8 ? (Utf8)this.userEmail : null);
+
+      this.userName = in.readString(this.userName instanceof Utf8 ? (Utf8)this.userName : null);
+
       this.badgeName = in.readString(this.badgeName instanceof Utf8 ? (Utf8)this.badgeName : null);
 
       this.badgeLevel = in.readString(this.badgeLevel instanceof Utf8 ? (Utf8)this.badgeLevel : null);
@@ -597,25 +749,33 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       this.earnedAt = in.readString(this.earnedAt instanceof Utf8 ? (Utf8)this.earnedAt : null);
 
     } else {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 7; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
           break;
 
         case 1:
-          this.badgeName = in.readString(this.badgeName instanceof Utf8 ? (Utf8)this.badgeName : null);
+          this.userEmail = in.readString(this.userEmail instanceof Utf8 ? (Utf8)this.userEmail : null);
           break;
 
         case 2:
-          this.badgeLevel = in.readString(this.badgeLevel instanceof Utf8 ? (Utf8)this.badgeLevel : null);
+          this.userName = in.readString(this.userName instanceof Utf8 ? (Utf8)this.userName : null);
           break;
 
         case 3:
-          this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+          this.badgeName = in.readString(this.badgeName instanceof Utf8 ? (Utf8)this.badgeName : null);
           break;
 
         case 4:
+          this.badgeLevel = in.readString(this.badgeLevel instanceof Utf8 ? (Utf8)this.badgeLevel : null);
+          break;
+
+        case 5:
+          this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+          break;
+
+        case 6:
           this.earnedAt = in.readString(this.earnedAt instanceof Utf8 ? (Utf8)this.earnedAt : null);
           break;
 
