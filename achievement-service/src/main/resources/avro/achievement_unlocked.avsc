@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "AchievementUnlocked",
+  "namespace": "comp41720.cinequest.events",
+  "fields": [
+    { "name": "userId", "type": "string" },
+    { "name": "badgeName", "type": "string" },
+    { "name": "badgeLevel", "type": "string" },
+    { "name": "description", "type": "string" },
+    { "name": "earnedAt", "type": "string" }
+  ]
+}
