@@ -11,6 +11,8 @@ echo "1. Creating a rating for user 'user123' and movie '550'"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe" \
   -d '{
     "movieId": 550,
     "score": 8,
@@ -23,6 +25,8 @@ echo "2. Creating another rating for user 'user123' and movie '680'"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe" \
   -d '{
     "movieId": 680,
     "score": 9,
@@ -67,6 +71,8 @@ echo "8. Testing validation - invalid score (should fail)"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe" \
   -d '{
     "movieId": 550,
     "score": 15,
@@ -79,6 +85,8 @@ echo "9. Testing duplicate rating (should fail)"
 curl -X POST http://localhost:3003/api/ratings \
   -H "Content-Type: application/json" \
   -H "X-User-Id: user123" \
+  -H "X-User-Email: user123@example.com" \
+  -H "X-User-Name: John Doe" \
   -d '{
     "movieId": 550,
     "score": 7,
