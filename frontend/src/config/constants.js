@@ -62,6 +62,6 @@ export const REQUEST_TIMEOUT = 10000;
 export const QUERY_CONFIG = {
   STALE_TIME: 5 * 60 * 1000, // 5 minutes
   CACHE_TIME: 10 * 60 * 1000, // 10 minutes
-  RETRY: 2, // Retry twice
+  RETRY: 3, // Retry 3 times
   REFETCH_ON_WINDOW_FOCUS: false, // Do not refetch when window regains focus
 };

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px;
+            color: #333333;
+        }
+        .content h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .content p {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 20px 0;
+            background-color: #667eea;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>🎬 CineQuest</h1>
+    </div>
+    <div class="content">
+        <h2 th:text="${title}">Notification Title</h2>
+        <p>Hi <strong th:text="${username}">User</strong>,</p>
+        <p th:text="${message}">Your notification message here.</p>
+        <div th:if="${buttonText}" style="text-align: center;">
+            <a th:href="${buttonLink}" class="button" th:text="${buttonText}">View Details</a>
+        </div>
+    </div>
+    <div class="footer">
+        <p>This is an automated message from CineQuest.</p>
+        <p>© 2025 CineQuest. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
