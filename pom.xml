@@ -48,6 +48,8 @@
 
     <modules>
         <module>rating-service</module>
+        <module>sign-service</module>
+        <module>achievement-service</module>
     </modules>
 
     <build>
@@ -57,7 +59,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>${dockerAccount}/lab4-${project.artifactId}</name>
+                        <name>${dockerAccount}/cinequest-${project.artifactId}</name>
                         <builder>dashaun/builder:tiny</builder>
                         <publish>true</publish>
                     </image>

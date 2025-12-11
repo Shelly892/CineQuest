@@ -111,6 +111,16 @@ services:
       KAFKA_CLUSTERS_SCHEMAREGISTRY: http://schema-registry:8081
       DYNAMIC_CONFIG_ENABLED: 'true'
 
+  # services
+  rating-service:
+    image: zeli8888/cinequest-rating-service:latest
+    ports:
+      - "3003:3003"
+    depends_on:
+      - rating-mongodb
+    environment:
+
+
 volumes:
   sign_postgres_data:
     driver: local
