@@ -11,20 +11,19 @@ spring:
       group-id: notification-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroSerializer
       properties:
-        spring.json.trusted.packages: "*"
-        spring.json.value.default.type: "com.cinequest.notificationservice.model.NotificationEvent"
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        specific.avro.reader: true  # ← 使用具体的 Avro 类
+        schema.registry.url: http://127.0.0.1:8085  # ← Schema Registry 地址
+
 
   # Mailtrap config
   mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+   host: ${MAIL_HOST}
+   port: ${MAIL_PORT}
+   username: ${MAIL_USERNAME}
+   password: ${MAIL_PASSWORD}
+
 
     properties:
       mail:

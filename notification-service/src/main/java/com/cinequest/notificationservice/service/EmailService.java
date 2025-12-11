@@ -1,6 +1,5 @@
 package com.cinequest.notificationservice.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,17 +92,4 @@ public class EmailService {
 
         sendTemplateEmail(to, "🎉 Achievement Unlocked: " + achievementName, "achievement", variables);
     }
-
-//    /**
-//     * 发送通用通知邮件
-//     */
-//    public void sendNotificationEmail(String to, String username, String title, String message) {
-//        Map<String, Object> variables = Map.of(
-//                "username", username,
-//                "title", title,
-//                "message", message
-//        );
-//
-//        sendTemplateEmail(to, title, "notification", variables);
-//    }
 }

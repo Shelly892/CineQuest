@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 40px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 32px;
+      }
+      .content {
+        padding: 40px;
+      }
+      .achievement-badge {
+        text-align: center;
+        font-size: 80px;
+        margin: 20px 0;
+      }
+      .achievement-name {
+        font-size: 24px;
+        color: #f59e0b;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0;
+      }
+      .description {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+      }
+      .message {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      .footer {
+        background: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎉 Achievement Unlocked!</h1>
+      </div>
+      <div class="content">
+        <div class="achievement-badge">🏆</div>
+        <div class="achievement-name" th:text="${achievementName}">
+          Achievement Name
+        </div>
+        <p class="description" th:text="${description}">
+          Achievement description
+        </p>
+        <div class="message">
+          <p>
+            <strong
+              >Congratulations, <span th:text="${username}">User</span>!</strong
+            >
+          </p>
+          <p th:text="${message}">Keep up the great work!</p>
+        </div>
+      </div>
+      <div class="footer">
+        <p>🎬 CineQuest - Your Movie Journey</p>
+      </div>
+    </div>
+  </body>
+</html>
