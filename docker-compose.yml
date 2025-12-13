@@ -54,14 +54,14 @@ services:
       retries: 10
       start_period: 15s
 
-  # Redis for Movie Service
-  redis:
-    image: redis:latest
-    container_name: redis-cinequest
-    ports:
-      - "6379:6379"
-    networks:
-      - cinequest-network
+#  # Redis for Movie Service
+#  redis:
+#    image: redis:latest
+#    container_name: redis-cinequest
+#    ports:
+#      - "6379:6379"
+#    networks:
+#      - cinequest-network
 
   # manage cluster state(topic partition, broker state and message, etc.)
   zookeeper:
@@ -164,41 +164,41 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: broker:29092
       KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-  movie-service:
-    build:
-      context: ./movie-service
-      dockerfile: Dockerfile
-    container_name: movie-service-cinequest
-    ports:
-      - "3002:3002"
-    depends_on:
-      - redis
-    environment:
-      TMDB_API_KEY: ${TMDB_API_KEY}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    networks:
-      - cinequest-network
+#  movie-service:
+#    build:
+#      context: ./movie-service
+#      dockerfile: Dockerfile
+#    container_name: movie-service-cinequest
+#    ports:
+#      - "3002:3002"
+#    depends_on:
+#      - redis
+#    environment:
+#      TMDB_API_KEY: ${TMDB_API_KEY}
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#    networks:
+#      - cinequest-network
 
-  notification-service:
-    build:
-      context: ./notification-service
-      dockerfile: Dockerfile
-    container_name: notification-service-cinequest
-    ports:
-      - "3006:3006"
-    depends_on:
-      - broker
-      - schema-registry
-    environment:
-      MAIL_HOST: ${MAIL_HOST}
-      MAIL_PORT: ${MAIL_PORT}
-      MAIL_USERNAME: ${MAIL_USERNAME}
-      MAIL_PASSWORD: ${MAIL_PASSWORD}
-      KAFKA_BOOTSTRAP_SERVERS: broker:29092
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    networks:
-      - cinequest-network
+#  notification-service:
+#    build:
+#      context: ./notification-service
+#      dockerfile: Dockerfile
+#    container_name: notification-service-cinequest
+#    ports:
+#      - "3006:3006"
+#    depends_on:
+#      - broker
+#      - schema-registry
+#    environment:
+#      MAIL_HOST: ${MAIL_HOST}
+#      MAIL_PORT: ${MAIL_PORT}
+#      MAIL_USERNAME: ${MAIL_USERNAME}
+#      MAIL_PASSWORD: ${MAIL_PASSWORD}
+#      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+#      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#    networks:
+#      - cinequest-network
 
 volumes:
   sign_postgres_data:
