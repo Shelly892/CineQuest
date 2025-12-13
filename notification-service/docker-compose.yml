@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Zookeeper（Kafka 依赖）
+  # Zookeeper (Kafka dependency)
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper-cinequest
@@ -18,15 +18,15 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"   #容器
-      - "9093:9093"   #主机
+      - "9092:9092"   # Container
+      - "9093:9093"   # Host
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        # 两种 listener：容器内部 & 宿主机
+        # Two listeners: container internal & host
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093    #正式地址
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093    # Advertised address
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -46,7 +46,7 @@ services:
 #      KAFKA_CLUSTERS_SCHEMAREGISTRY: http://schema-registry:8081
       DYNAMIC_CONFIG_ENABLED: 'true'
 
-  # Redis（已有）
+  # Redis (existing)
 #  redis:
 #    image: redis:latest
 #    container_name: redis-cinequest

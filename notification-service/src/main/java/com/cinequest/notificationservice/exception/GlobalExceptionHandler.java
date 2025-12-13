@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralError(Exception ex) {
-        log.error("❌ Unexpected Error: {}", ex.getMessage(), ex);
+        log.error(" Unexpected Error: {}", ex.getMessage(), ex);
 
         Map<String, Object> error = new HashMap<>();
         error.put("error", "Internal Server Error");

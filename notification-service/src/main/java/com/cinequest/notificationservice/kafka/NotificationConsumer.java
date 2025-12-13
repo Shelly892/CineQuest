@@ -20,7 +20,7 @@ public class NotificationConsumer {
         log.info("Received achievement event: {}", event);
 
         try {
-            // 检查必要字段是否存在
+
             if (event.getUserEmail() == null || event.getUserName() == null || 
                 event.getBadgeName() == null || event.getDescription() == null ||
                 event.getBadgeLevel() == null || event.getEarnedAt() == null) {

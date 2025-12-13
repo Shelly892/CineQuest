@@ -20,7 +20,7 @@ public class MovieController {
     }
 
     /**
-     * 获取热门电影
+     * Get popular movies
      * GET /api/movies/popular?page=1
      */
     @GetMapping("/popular")
@@ -34,7 +34,7 @@ public class MovieController {
     }
 
     /**
-     * 获取电影详情
+     * Get movie details
      * GET /api/movies/{id}
      */
     @GetMapping("/{id}")
@@ -46,7 +46,7 @@ public class MovieController {
     }
 
     /**
-     * 搜索电影
+     * Search movies
      * GET /api/movies/search?q=batman&page=1
      */
     @GetMapping("/search")
@@ -61,7 +61,7 @@ public class MovieController {
     }
 
     /**
-     * 健康检查
+     * Health check
      * GET /api/movies/health
      */
     @GetMapping("/health")

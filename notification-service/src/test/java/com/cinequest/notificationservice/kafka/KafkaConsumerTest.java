@@ -12,12 +12,12 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Kafka Consumer 手动测试类
+ * Kafka Consumer manual test class
  * 
- * 使用方法:
- * 1. 确保 Kafka broker 和 Schema Registry 正在运行
- * 2. 运行这个测试类
- * 3. 查看 notification-service 日志确认消息被接收
+ * Usage:
+ * 1. Ensure Kafka broker and Schema Registry are running
+ * 2. Run this test class
+ * 3. Check notification-service logs to confirm message was received
  */
 @SpringBootTest
 @DirtiesContext
@@ -29,7 +29,7 @@ public class KafkaConsumerTest {
 
     @Test
     public void testSendAchievementEvent() throws InterruptedException {
-        // 创建测试消息
+        // Create test message
         AchievementUnlocked event = AchievementUnlocked.newBuilder()
                 .setUserId("test-user-123")
                 .setUserEmail("test@example.com")
@@ -40,15 +40,15 @@ public class KafkaConsumerTest {
                 .setEarnedAt(Instant.now().toString())
                 .build();
 
-        // 发送消息到 Kafka
-        System.out.println("发送测试消息到 topic: achievement_unlocked");
-        System.out.println("消息内容: " + event);
+        // Send message to Kafka
+        System.out.println("Sending test message to topic: achievement_unlocked");
+        System.out.println("Message content: " + event);
         
         kafkaTemplate.send("achievement_unlocked", event.getUserId().toString(), event);
         
-        // 等待 Consumer 处理消息
+        // Wait for Consumer to process message
         Thread.sleep(2000);
         
-        System.out.println("测试消息已发送，请检查 Consumer 日志确认是否接收到消息");
+        System.out.println("Test message sent, please check Consumer logs to confirm message was received");
     }
 }

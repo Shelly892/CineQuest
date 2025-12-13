@@ -8,7 +8,7 @@ export default function MovieCard({ movie, index = 0 }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{
         duration: 0.4,
-        delay: index * 0.05, // 根据索引延迟
+        delay: index * 0.05, // Delay based on index
         ease: [0.25, 0.1, 0.25, 1],
       }}
       whileHover={{
@@ -20,14 +20,14 @@ export default function MovieCard({ movie, index = 0 }) {
     >
       <Link to={`/movies/${movie.id}`}>
         <div className="relative group">
-          {/* 电影海报 */}
+          {/* Movie poster */}
           <motion.div
             className="w-full bg-center bg-no-repeat aspect-[3/4] bg-cover rounded-lg overflow-hidden shadow-lg"
             style={{ backgroundImage: `url("${movie.poster}")` }}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Hover 遮罩层 */}
+            {/* Hover overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               whileHover={{ opacity: 1 }}

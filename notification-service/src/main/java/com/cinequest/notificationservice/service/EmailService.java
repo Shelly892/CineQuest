@@ -28,7 +28,7 @@ public class EmailService {
     private String fromName;
 
     /**
-     * 发送 HTML 邮件（使用模板）
+     * Send HTML email using template
      */
     @Async
     public void sendTemplateEmail(String to, String subject, String template, Map<String, Object> variables) {
@@ -36,19 +36,19 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            // 设置发件人
+            // Set sender
             helper.setFrom(fromEmail, fromName);
             helper.setTo(to);
             helper.setSubject(subject);
 
-            // create thymeleaf template
+            // Create Thymeleaf template
             Context context = new Context();
             context.setVariables(variables);
             String html = templateEngine.process("email/" + template, context);
 
             helper.setText(html, true);
 
-            // 发送邮件
+            // Send email
             mailSender.send(message);
 
             log.info(" Email sent successfully to {}", to);
@@ -58,7 +58,7 @@ public class EmailService {
     }
 
 //    /**
-//     * 发送简单文本邮件
+//     * Send simple text email
 //     */
 //    @Async
 //    public void sendSimpleEmail(String to, String subject, String content) {
@@ -80,7 +80,7 @@ public class EmailService {
 //    }
 
     /**
-     * 发送成就解锁邮件
+     * Send achievement unlocked email
      */
     public void sendAchievementEmail(String to, String username, String achievementName, String description, String badgeLevel, String earnedAt) {
         Map<String, Object> variables = Map.of(

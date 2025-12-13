@@ -6,28 +6,22 @@ spring:
 
   # Kafka properties
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: notification-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       properties:
-        specific.avro.reader: true  # ← 使用具体的 Avro 类
-        schema.registry.url: http://127.0.0.1:8085  # ← Schema Registry 地址
-
+        specific.avro.reader: true
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://127.0.0.1:8085}
 
   # Mailtrap config
   mail:
-#    host: ${MAIL_HOST}
-#    port: ${MAIL_PORT}
-#    username: ${MAIL_USERNAME}
-#    password: ${MAIL_PASSWORD}
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: cadcd6f417175d
-    password: d67d43fd5f818f
-
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
 
     properties:
       mail:
@@ -38,7 +32,7 @@ spring:
             required: true
         debug: false
 
-  # Thymeleaf 配置
+  # Thymeleaf config
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
@@ -47,24 +41,13 @@ spring:
 server:
   port: 3006
 
-# Actuator 配置
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
-
-# 日志配置
+# log config
 logging:
   level:
     com.cinequest.notificationservice: DEBUG
     org.springframework.kafka: INFO
     org.springframework.mail: DEBUG
 
-# 自定义配置
 notification:
   from-email: noreply@cinequest.com
   from-name: CineQuest Team

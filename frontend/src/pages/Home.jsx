@@ -9,7 +9,7 @@ import MovieCard from "../components/features/MovieCard";
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock 数据 - 热门电影
+  // Mock data - trending movies
   const trendingMovies = [
     {
       id: 1,
@@ -48,7 +48,7 @@ export default function Home() {
     },
   ];
 
-  // Mock 数据 - 推荐电影
+  // Mock data - recommended movies
   const recommendedMovies = Array.from({ length: 12 }, (_, i) => ({
     id: i + 6,
     title: `Movie ${i + 6}`,
@@ -78,7 +78,7 @@ export default function Home() {
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=600&fit=crop")`,
               }}
             >
-              {/* 背景动画光晕 */}
+              {/* Background animation glow */}
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],

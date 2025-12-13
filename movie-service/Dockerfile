@@ -1,31 +1,31 @@
-# 使用官方 Maven 镜像作为构建阶段
+# Use official Maven image as build stage
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# 设置工作目录
+# Set working directory
 WORKDIR /app
 
-# 复制 pom.xml 和源代码
+# Copy pom.xml and source code
 COPY pom.xml .
 COPY src ./src
 
-# 构建应用（跳过测试以加快构建速度）
+# Build application (skip tests to speed up build)
 RUN mvn clean package -DskipTests
 
-# 使用轻量级 JRE 镜像作为运行阶段
+# Use lightweight JRE image as runtime stage
 FROM eclipse-temurin:17-jre-alpine
 
-# 设置工作目录
+# Set working directory
 WORKDIR /app
 
-# 从构建阶段复制 JAR 文件
+# Copy JAR file from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# 暴露端口
+# Expose port
 EXPOSE 3002
 
-# 健康检查
+# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3002/actuator/health || exit 1
 
-# 启动应用
+# Start application
 ENTRYPOINT ["java", "-jar", "app.jar"]

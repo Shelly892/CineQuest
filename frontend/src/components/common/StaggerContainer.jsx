@@ -6,7 +6,7 @@ export default function StaggerContainer({ children, className = "" }) {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, // 每个子元素延迟 0.1s
+        staggerChildren: 0.1, // Delay each child element by 0.1s
       },
     },
   };

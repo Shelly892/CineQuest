@@ -17,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
-     * 处理 TMDB API 4xx 错误
+     * Handle TMDB API 4xx errors
      */
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<Map<String, Object>> handleClientError(HttpClientErrorException ex) {
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理 TMDB API 5xx 错误
+     * Handle TMDB API 5xx errors
      */
     @ExceptionHandler(HttpServerErrorException.class)
     public ResponseEntity<Map<String, Object>> handleServerError(HttpServerErrorException ex) {
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理网络连接错误
+     * Handle network connection errors
      */
     @ExceptionHandler(ResourceAccessException.class)
     public ResponseEntity<Map<String, Object>> handleNetworkError(ResourceAccessException ex) {
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理其他所有异常
+     * Handle all other exceptions
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralError(Exception ex) {
