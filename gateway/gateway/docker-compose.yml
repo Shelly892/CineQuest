@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # Keycloak Database
+  keycloak-db:
+    image: postgres:15-alpine
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    networks:
+      - cinequest-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Keycloak Identity Provider
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8080
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "9090:8080"  # External port 9090 maps to internal 8080
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - cinequest-network
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'echo > /dev/tcp/localhost/8080'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # Gateway Service
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
+      GATEWAY_SERVICES_MOVIE: http://movie-service:8080
+      GATEWAY_SERVICES_RATING: http://rating-service:8080
+      GATEWAY_SERVICES_SIGN: http://sign-service:8080
+      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:8080
+      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:8080
+      GATEWAY_SERVICES_USER: http://user-service:8080
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - cinequest-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Movie Service Database (if needed in the future)
+  movie-db:
+    image: postgres:15-alpine
+    container_name: movie-db
+    environment:
+      POSTGRES_DB: cinequest_movie
+      POSTGRES_USER: movie
+      POSTGRES_PASSWORD: movie
+    volumes:
+      - movie-db-data:/var/lib/postgresql/data
+    networks:
+      - cinequest-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U movie"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  keycloak-db-data:
+  movie-db-data:
+
+networks:
+  cinequest-network:
+    driver: bridge
+

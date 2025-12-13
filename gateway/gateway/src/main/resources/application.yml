@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: cinequest-gateway
+  
+  # Service URLs for gateway routing (Docker service names)
+  # These can be overridden by environment variables
+  gateway:
+    services:
+      keycloak: http://keycloak:8080
+      movie: http://movie-service:8080
+      rating: http://rating-service:8080
+      sign: http://sign-service:8080
+      achievement: http://achievement-service:8080
+      notification: http://notification-service:8080
+      user: http://user-service:8080
+  
+  # Circuit breaker configuration
+  cloud:
+    circuitbreaker:
+      resilience4j:
+        configs:
+          default:
+            slidingWindowSize: 10
+            minimumNumberOfCalls: 5
+            permittedNumberOfCallsInHalfOpenState: 3
+            automaticTransitionFromOpenToHalfOpenEnabled: true
+            waitDurationInOpenState: 10s
+            failureRateThreshold: 50
+            eventConsumerBufferSize: 10
+        instances:
+          movieServiceCircuitBreaker:
+            baseConfig: default
+          ratingServiceCircuitBreaker:
+            baseConfig: default
+          signServiceCircuitBreaker:
+            baseConfig: default
+          achievementServiceCircuitBreaker:
+            baseConfig: default
+          notificationServiceCircuitBreaker:
+            baseConfig: default
+          userServiceCircuitBreaker:
+            baseConfig: default
+  
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/cinequest
+
+# Resilience4j configuration for timeout and retry
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 3s
+    instances:
+      movieServiceTimeout:
+        baseConfig: default
+      ratingServiceTimeout:
+        baseConfig: default
+      signServiceTimeout:
+        baseConfig: default
+      achievementServiceTimeout:
+        baseConfig: default
+      notificationServiceTimeout:
+        baseConfig: default
+      userServiceTimeout:
+        baseConfig: default
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 500ms
+        retryExceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+    instances:
+      movieServiceRetry:
+        baseConfig: default
+      ratingServiceRetry:
+        baseConfig: default
+      signServiceRetry:
+        baseConfig: default
+      achievementServiceRetry:
+        baseConfig: default
+      notificationServiceRetry:
+        baseConfig: default
+      userServiceRetry:
+        baseConfig: default
+
+server:
+  port: 8000
+
+# Actuator configuration for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.cinequest.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG
+
+# CineQuest custom configuration
+cinequest:
+  keycloak-service-url: http://keycloak:8080
+
