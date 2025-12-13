@@ -1,168 +1,168 @@
 version: "3.8"
 services:
-#  # Databases
-#  sign-postgres:
-#    image: postgres:17.6
-#    environment:
-#      POSTGRES_DB: sign
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: password
+  # Databases
+  sign-postgres:
+    image: postgres:17.6
+    environment:
+      POSTGRES_DB: sign
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - sign_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sign"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  rating-mongodb:
+    image: mongo:7.0.5
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: rating-service
+    volumes:
+      - rating_mongodb_data:/data/db
+      - rating_mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  achievement-mongodb:
+    image: mongo:7.0.5
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: achievement-service
+    volumes:
+      - achievement_mongodb_data:/data/db
+      - achievement_mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+#  # Redis for Movie Service
+#  redis:
+#    image: redis:latest
+#    container_name: redis-cinequest
 #    ports:
-#      - "5432:5432"
-#    volumes:
-#      - sign_postgres_data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: ["CMD-SHELL", "pg_isready -U postgres -d sign"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 15s
-#
-#  rating-mongodb:
-#    image: mongo:7.0.5
-#    ports:
-#      - "27017:27017"
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: password
-#      MONGO_INITDB_DATABASE: rating-service
-#    volumes:
-#      - rating_mongodb_data:/data/db
-#      - rating_mongodb_config:/data/configdb
-#    healthcheck:
-#      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 15s
-#
-#  achievement-mongodb:
-#    image: mongo:7.0.5
-#    ports:
-#      - "27018:27017"
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: password
-#      MONGO_INITDB_DATABASE: achievement-service
-#    volumes:
-#      - achievement_mongodb_data:/data/db
-#      - achievement_mongodb_config:/data/configdb
-#    healthcheck:
-#      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 15s
-#
-##  # Redis for Movie Service
-##  redis:
-##    image: redis:latest
-##    container_name: redis-cinequest
-##    ports:
-##      - "6379:6379"
-##    networks:
-##      - cinequest-network
-#
-#  # manage cluster state(topic partition, broker state and message, etc.)
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:7.5.0
-#    hostname: zookeeper
-#    ports:
-#      - "2181:2181"
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      # base unit time in zookeeper, heartbeat interval and session timeout are multiples of this
-#      ZOOKEEPER_TICK_TIME: 2000
-#
-#  # message broker, only one instance for this demo project
-#  broker:
-#    image: confluentinc/cp-kafka:7.5.0
-#    ports:
-#      - "9092:9092"
-#      - "29092:29092"
-#    depends_on:
-#      - zookeeper
-#    environment:
-#      # unique broker id
-#      KAFKA_BROKER_ID: 1
-#      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-#      # security protocol, use plaintext for internal and external communication in this demo project
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      # access from another container using 29092, access from host machine using 9092
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-#      # internal replication factor for offset topic
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#
-#  # manage message schema and serialization mode
-#  schema-registry:
-#    image: confluentinc/cp-schema-registry:7.5.0
-#    hostname: schema-registry
-#    depends_on:
-#      - broker
-#    ports:
-#      - "8085:8081"
-#    environment:
-#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-#      # address to connect with kafka to persist schema information
-#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "broker:29092"
-#      # offer address for producer and consumer to access
-#      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
-#
-#  # provide a web interface to manage kafka cluster
-#  kafka-ui:
-#    image: provectuslabs/kafka-ui:latest
-#    ports:
-#      - "8086:8080"
-#    depends_on:
-#      - broker
-#    environment:
-#      KAFKA_CLUSTERS_NAME: local
-#      KAFKA_CLUSTERS_BOOTSTRAPSERVERS: broker:29092
-#      KAFKA_CLUSTERS_SCHEMAREGISTRY: http://schema-registry:8081
-#      DYNAMIC_CONFIG_ENABLED: "true"
-#
-#  #   services
-#  rating-service:
-#    image: zeli8888/cinequest-rating-service
-#    ports:
-#      - "3003:3003"
-#    depends_on:
-#      rating-mongodb:
-#        condition: service_healthy
-#    environment:
-#      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/order-service?authSource=admin
-#      ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
-#
-#  sign-service:
-#    image: zeli8888/cinequest-sign-service
-#    ports:
-#      - "3004:3004"
-#    depends_on:
-#      sign-postgres:
-#        condition: service_healthy
-#    environment:
-#      SIGN_POSTGRES_URI: jdbc:postgresql://sign-postgres:5432/sign
-#      SIGN_POSTGRES_USER: postgres
-#      SIGN_POSTGRES_PASSWORD: password
-#      ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
-#
-#  achievement-service:
-#    image: zeli8888/cinequest-achievement-service
-#    ports:
-#      - "3005:3005"
-#    depends_on:
-#      achievement-mongodb:
-#        condition: service_healthy
-#      broker:
-#        condition: service_started
-#      schema-registry:
-#        condition: service_started
-#      zookeeper:
-#        condition: service_started
-#    environment:
-#      ACHIEVEMENT_MONGODB_URI: mongodb://root:password@achievement-mongodb:27017/achievement-service?authSource=admin
-#      KAFKA_BOOTSTRAP_SERVERS: broker:29092
-#      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#      - "6379:6379"
+#    networks:
+#      - cinequest-network
+
+  # manage cluster state(topic partition, broker state and message, etc.)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      # base unit time in zookeeper, heartbeat interval and session timeout are multiples of this
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # message broker, only one instance for this demo project
+  broker:
+    image: confluentinc/cp-kafka:7.5.0
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    depends_on:
+      - zookeeper
+    environment:
+      # unique broker id
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      # security protocol, use plaintext for internal and external communication in this demo project
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # access from another container using 29092, access from host machine using 9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      # internal replication factor for offset topic
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # manage message schema and serialization mode
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.0
+    hostname: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "8085:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      # address to connect with kafka to persist schema information
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "broker:29092"
+      # offer address for producer and consumer to access
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
+
+  # provide a web interface to manage kafka cluster
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8086:8080"
+    depends_on:
+      - broker
+    environment:
+      KAFKA_CLUSTERS_NAME: local
+      KAFKA_CLUSTERS_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_SCHEMAREGISTRY: http://schema-registry:8081
+      DYNAMIC_CONFIG_ENABLED: "true"
+
+  #   services
+  rating-service:
+    image: zeli8888/cinequest-rating-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      rating-mongodb:
+        condition: service_healthy
+    environment:
+      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/order-service?authSource=admin
+      ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
+
+  sign-service:
+    image: zeli8888/cinequest-sign-service
+    ports:
+      - "3004:3004"
+    depends_on:
+      sign-postgres:
+        condition: service_healthy
+    environment:
+      SIGN_POSTGRES_URI: jdbc:postgresql://sign-postgres:5432/sign
+      SIGN_POSTGRES_USER: postgres
+      SIGN_POSTGRES_PASSWORD: password
+      ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
+
+  achievement-service:
+    image: zeli8888/cinequest-achievement-service
+    ports:
+      - "3005:3005"
+    depends_on:
+      achievement-mongodb:
+        condition: service_healthy
+      broker:
+        condition: service_started
+      schema-registry:
+        condition: service_started
+      zookeeper:
+        condition: service_started
+    environment:
+      ACHIEVEMENT_MONGODB_URI: mongodb://root:password@achievement-mongodb:27017/achievement-service?authSource=admin
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
 #  movie-service:
 #    build:
@@ -180,25 +180,25 @@ services:
 #    networks:
 #      - cinequest-network
 
-#  notification-service:
-#    build:
-#      context: ./notification-service
-#      dockerfile: Dockerfile
-#    container_name: notification-service-cinequest
-#    ports:
-#      - "3006:3006"
-#    depends_on:
-#      - broker
-#      - schema-registry
-#    environment:
-#      MAIL_HOST: ${MAIL_HOST}
-#      MAIL_PORT: ${MAIL_PORT}
-#      MAIL_USERNAME: ${MAIL_USERNAME}
-#      MAIL_PASSWORD: ${MAIL_PASSWORD}
-#      KAFKA_BOOTSTRAP_SERVERS: broker:29092
-#      SCHEMA_REGISTRY_URL: http://schema-registry:8081
-#    networks:
-#      - cinequest-network
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service-cinequest
+    ports:
+      - "3006:3006"
+    depends_on:
+      - broker
+      - schema-registry
+    environment:
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    networks:
+      - cinequest-network
 
   # Keycloak Database
   keycloak-mysql:
@@ -238,66 +238,66 @@ services:
       - ./data_volume/keycloak/realms/:/opt/keycloak/data/import/
 
 #  # Gateway Service
-#  gateway:
-#    build:
-#      context: ./gateway
-#      dockerfile: Dockerfile
-#    container_name: gateway
-#    ports:
-#      - "8000:8000"
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
-#      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
-#      GATEWAY_SERVICES_RATING: http://rating-service:3003
-#      GATEWAY_SERVICES_SIGN: http://sign-service:3004
-#      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
-#      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
-#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
-#    depends_on:
-#      keycloak:
-#        condition: service_healthy
-#    networks:
-#      - cinequest-network
-#    healthcheck:
-#      test: ["CMD-SHELL", "curl -f http://localhost:8000/actuator/health || exit 1"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-#      start_period: 30s
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
+      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
+      GATEWAY_SERVICES_RATING: http://rating-service:3003
+      GATEWAY_SERVICES_SIGN: http://sign-service:3004
+      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
+      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - cinequest-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
-#volumes:
-#  sign_postgres_data:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      o: bind
-#      device: ./data_volume/postgres-inventory/db
-#  rating_mongodb_data:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      o: bind
-#      device: ./data_volume/mongodb-order/db
-#  rating_mongodb_config:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      o: bind
-#      device: ./data_volume/mongodb-order/configdb
-#  achievement_mongodb_data:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      o: bind
-#      device: ./data_volume/mongodb-achievement/db
-#  achievement_mongodb_config:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      o: bind
-#      device: ./data_volume/mongodb-achievement/configdb
-#
+volumes:
+  sign_postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/postgres-inventory/db
+  rating_mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-order/db
+  rating_mongodb_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-order/configdb
+  achievement_mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-achievement/db
+  achievement_mongodb_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mongodb-achievement/configdb
+
 networks:
   cinequest-network:
     driver: bridge
