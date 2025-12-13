@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: optional:file:.env
   application:
     name: notification-service
 
@@ -18,10 +16,10 @@ spring:
 
   # Mailtrap config
   mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    host: ${MAILTRAP_HOST:sandbox.smtp.mailtrap.io}
+    port: ${MAILTRAP_PORT:2525}
+    username: ${MAILTRAP_USERNAME:320507215fd1af}
+    password: ${MAILTRAP_PASSWORD:fe0f5ce461f8b0}
 
     properties:
       mail:
