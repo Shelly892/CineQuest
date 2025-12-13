@@ -200,6 +200,66 @@ services:
 #    networks:
 #      - cinequest-network
 
+  # Keycloak Database
+  keycloak-mysql:
+    container_name: keycloak-mysql
+    image: mysql:8
+    volumes:
+      - ./data_volume/mysql_keycloak_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    command: [ "start-dev", "--import-realm" ]
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "3001:8080"
+    depends_on:
+      - keycloak-mysql
+    networks:
+      - cinequest-network
+    volumes:
+      - ./data_volume/keycloak/realms/:/opt/keycloak/data/import/
+
+#  # Gateway Service
+#  gateway:
+#    build:
+#      context: ./gateway
+#      dockerfile: Dockerfile
+#    container_name: gateway
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
+#      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
+#      GATEWAY_SERVICES_RATING: http://rating-service:3003
+#      GATEWAY_SERVICES_SIGN: http://sign-service:3004
+#      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
+#      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
+#    depends_on:
+#      keycloak:
+#        condition: service_healthy
+#    networks:
+#      - cinequest-network
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl -f http://localhost:8000/actuator/health || exit 1"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 30s
+
 volumes:
   sign_postgres_data:
     driver: local

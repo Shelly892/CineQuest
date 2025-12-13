@@ -1,6 +1,6 @@
-package com.cinequest.gateway.config;
+package comp41720.cinequest.gateway.config;
 
-import com.cinequest.gateway.filter.UserIdHeaderFilter;
+import comp41720.cinequest.gateway.filter.UserIdHeaderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,64 +131,64 @@ public class Routes {
     /**
      * Create a handler function that proxies to Keycloak with path rewriting
      */
-    private HandlerFunction<ServerResponse> createKeycloakHandler(String targetPath) {
-        URI targetUri = URI.create(keycloakServiceUrl + targetPath);
-        return request -> {
-            // Create a new request with the rewritten URI
-            ServerRequest rewrittenRequest = ServerRequest.from(request)
-                    .uri(targetUri)
-                    .build();
-            return HandlerFunctions.http(targetUri).handle(rewrittenRequest);
-        };
-    }
+//    private HandlerFunction<ServerResponse> createKeycloakHandler(String targetPath) {
+//        URI targetUri = URI.create(keycloakServiceUrl + targetPath);
+//        return request -> {
+//            // Create a new request with the rewritten URI
+//            ServerRequest rewrittenRequest = ServerRequest.from(request)
+//                    .uri(targetUri)
+//                    .build();
+//            return HandlerFunctions.http(targetUri).handle(rewrittenRequest);
+//        };
+//    }
+//
+//    @Bean
+//    public RouterFunction<ServerResponse> authLoginRoute() {
+//        String realm = "cinequest";
+//        String targetPath = "/realms/" + realm + "/protocol/openid-connect/token";
+//
+//        return GatewayRouterFunctions.route("auth_login")
+//                .route(RequestPredicates.path("/api/auth/login")
+//                        .and(RequestPredicates.method(HttpMethod.POST)),
+//                       createKeycloakHandler(targetPath))
+//                .build();
+//    }
     
-    @Bean
-    public RouterFunction<ServerResponse> authLoginRoute() {
-        String realm = "cinequest";
-        String targetPath = "/realms/" + realm + "/protocol/openid-connect/token";
-        
-        return GatewayRouterFunctions.route("auth_login")
-                .route(RequestPredicates.path("/api/auth/login")
-                        .and(RequestPredicates.method(HttpMethod.POST)),
-                       createKeycloakHandler(targetPath))
-                .build();
-    }
-    
-    @Bean
-    public RouterFunction<ServerResponse> authLogoutRoute() {
-        String realm = "cinequest";
-        String targetPath = "/realms/" + realm + "/protocol/openid-connect/logout";
-        
-        return GatewayRouterFunctions.route("auth_logout")
-                .route(RequestPredicates.path("/api/auth/logout")
-                        .and(RequestPredicates.method(HttpMethod.POST)),
-                       createKeycloakHandler(targetPath))
-                .build();
-    }
-    
-    @Bean
-    public RouterFunction<ServerResponse> authRefreshRoute() {
-        String realm = "cinequest";
-        String targetPath = "/realms/" + realm + "/protocol/openid-connect/token";
-        
-        return GatewayRouterFunctions.route("auth_refresh")
-                .route(RequestPredicates.path("/api/auth/refresh")
-                        .and(RequestPredicates.method(HttpMethod.POST)),
-                       createKeycloakHandler(targetPath))
-                .build();
-    }
-    
-    @Bean
-    public RouterFunction<ServerResponse> authUserinfoRoute() {
-        String realm = "cinequest";
-        String targetPath = "/realms/" + realm + "/protocol/openid-connect/userinfo";
-        
-        return GatewayRouterFunctions.route("auth_userinfo")
-                .route(RequestPredicates.path("/api/auth/userinfo")
-                        .and(RequestPredicates.method(HttpMethod.GET)),
-                       createKeycloakHandler(targetPath))
-                .build();
-    }
+//    @Bean
+//    public RouterFunction<ServerResponse> authLogoutRoute() {
+//        String realm = "cinequest";
+//        String targetPath = "/realms/" + realm + "/protocol/openid-connect/logout";
+//
+//        return GatewayRouterFunctions.route("auth_logout")
+//                .route(RequestPredicates.path("/api/auth/logout")
+//                        .and(RequestPredicates.method(HttpMethod.POST)),
+//                       createKeycloakHandler(targetPath))
+//                .build();
+//    }
+//
+//    @Bean
+//    public RouterFunction<ServerResponse> authRefreshRoute() {
+//        String realm = "cinequest";
+//        String targetPath = "/realms/" + realm + "/protocol/openid-connect/token";
+//
+//        return GatewayRouterFunctions.route("auth_refresh")
+//                .route(RequestPredicates.path("/api/auth/refresh")
+//                        .and(RequestPredicates.method(HttpMethod.POST)),
+//                       createKeycloakHandler(targetPath))
+//                .build();
+//    }
+//
+//    @Bean
+//    public RouterFunction<ServerResponse> authUserinfoRoute() {
+//        String realm = "cinequest";
+//        String targetPath = "/realms/" + realm + "/protocol/openid-connect/userinfo";
+//
+//        return GatewayRouterFunctions.route("auth_userinfo")
+//                .route(RequestPredicates.path("/api/auth/userinfo")
+//                        .and(RequestPredicates.method(HttpMethod.GET)),
+//                       createKeycloakHandler(targetPath))
+//                .build();
+//    }
 
     /**
      * Movie Service route - public access, no authentication required
@@ -268,22 +268,6 @@ public class Routes {
                        HandlerFunctions.http(notificationServiceUrl))
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("notificationServiceCircuitBreaker",
                         URI.create("forward:/fallback/notification")))
-                .filter(retryFilter(2))
-                .filter(userIdHeaderFilter) // Apply user ID header filter
-                .build();
-    }
-
-    /**
-     * User Service route - authentication required
-     * Includes: Circuit Breaker, Timeout, Retry (GET only), User ID Header
-     */
-    @Bean
-    public RouterFunction<ServerResponse> userServiceRoute() {
-        return GatewayRouterFunctions.route("user_service")
-                .route(RequestPredicates.path("/api/user/**"), 
-                       HandlerFunctions.http(userServiceUrl))
-                .filter(CircuitBreakerFilterFunctions.circuitBreaker("userServiceCircuitBreaker",
-                        URI.create("forward:/fallback/user")))
                 .filter(retryFilter(2))
                 .filter(userIdHeaderFilter) // Apply user ID header filter
                 .build();

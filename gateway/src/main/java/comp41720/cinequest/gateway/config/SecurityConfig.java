@@ -1,4 +1,4 @@
-package com.cinequest.gateway.config;
+package comp41720.cinequest.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,12 +40,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/**", "/api/rating/**", "/api/sign/**", 
                                "/api/achievement/**", "/api/notification/**").authenticated()
                 // All other routes require authentication
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> {})
-                .authenticationEntryPoint(authenticationEntryPoint) // Custom 401 error handler
-            )
+//            .oauth2ResourceServer(oauth2 -> oauth2
+//                .jwt(jwt -> {})
+//                .authenticationEntryPoint(authenticationEntryPoint) // Custom 401 error handler
+//            )
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(authenticationEntryPoint) // Handle unauthenticated requests
             )

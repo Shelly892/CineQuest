@@ -1,4 +1,4 @@
-package com.cinequest.gateway.controller;
+package comp41720.cinequest.gateway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

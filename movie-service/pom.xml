@@ -11,7 +11,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.cinequest</groupId>
+	<groupId>comp41720.CineQuest</groupId>
 	<artifactId>movie-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>movie-service</name>

@@ -1,4 +1,4 @@
-package com.cinequest.gateway.filter;
+package comp41720.cinequest.gateway.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

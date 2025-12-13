@@ -1,4 +1,4 @@
-package com.cinequest.gateway.config;
+package comp41720.cinequest.gateway.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

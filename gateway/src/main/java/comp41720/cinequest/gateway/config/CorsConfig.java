@@ -1,4 +1,4 @@
-package com.cinequest.gateway.config;
+package comp41720.cinequest.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
