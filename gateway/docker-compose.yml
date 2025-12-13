@@ -18,15 +18,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # Keycloak Identity Provider
+    ports:
+       - "5432:5435"  # Keycloak Identity Provider
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     command: start-dev
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_URL: :jdbc:postgresql://localhost:5435/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak
       KC_HOSTNAME: localhost
@@ -61,12 +61,11 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
-      GATEWAY_SERVICES_MOVIE: http://movie-service:8080
-      GATEWAY_SERVICES_RATING: http://rating-service:8080
-      GATEWAY_SERVICES_SIGN: http://sign-service:8080
-      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:8080
-      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:8080
-      GATEWAY_SERVICES_USER: http://user-service:8080
+      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
+      GATEWAY_SERVICES_RATING: http://rating-service:3003
+      GATEWAY_SERVICES_SIGN: http://sign-service:3004
+      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
+      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
     depends_on:
       keycloak:
@@ -80,27 +79,14 @@ services:
       retries: 5
       start_period: 30s
 
-  # Movie Service Database (if needed in the future)
-  movie-db:
-    image: postgres:15-alpine
-    container_name: movie-db
-    environment:
-      POSTGRES_DB: cinequest_movie
-      POSTGRES_USER: movie
-      POSTGRES_PASSWORD: movie
-    volumes:
-      - movie-db-data:/var/lib/postgresql/data
-    networks:
-      - cinequest-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U movie"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
 volumes:
-  keycloak-db-data:
-  movie-db-data:
+  postgres_inventory_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/keycloak/db
+
 
 networks:
   cinequest-network:
