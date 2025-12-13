@@ -56,6 +56,8 @@
         <module>rating-service</module>
         <module>sign-service</module>
         <module>achievement-service</module>
+        <module>movie-service</module>
+        <module>notification-service</module>
     </modules>
 
     <build>
