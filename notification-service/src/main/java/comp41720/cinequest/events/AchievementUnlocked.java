@@ -22,10 +22,10 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<AchievementUnlocked> ENCODER =
-      new BinaryMessageEncoder<>(MODEL$, SCHEMA$);
+          new BinaryMessageEncoder<>(MODEL$, SCHEMA$);
 
   private static final BinaryMessageDecoder<AchievementUnlocked> DECODER =
-      new BinaryMessageDecoder<>(MODEL$, SCHEMA$);
+          new BinaryMessageDecoder<>(MODEL$, SCHEMA$);
 
   /**
    * Return the BinaryMessageEncoder instance used by this class.
@@ -68,7 +68,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
    */
   public static AchievementUnlocked fromByteBuffer(
-      java.nio.ByteBuffer b) throws java.io.IOException {
+          java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
   }
 
@@ -117,14 +117,14 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   @Override
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return userId;
-    case 1: return userEmail;
-    case 2: return userName;
-    case 3: return badgeName;
-    case 4: return badgeLevel;
-    case 5: return description;
-    case 6: return earnedAt;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+      case 0: return userId;
+      case 1: return userEmail;
+      case 2: return userName;
+      case 3: return badgeName;
+      case 4: return badgeLevel;
+      case 5: return description;
+      case 6: return earnedAt;
+      default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -133,14 +133,14 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: userId = (java.lang.CharSequence)value$; break;
-    case 1: userEmail = (java.lang.CharSequence)value$; break;
-    case 2: userName = (java.lang.CharSequence)value$; break;
-    case 3: badgeName = (java.lang.CharSequence)value$; break;
-    case 4: badgeLevel = (java.lang.CharSequence)value$; break;
-    case 5: description = (java.lang.CharSequence)value$; break;
-    case 6: earnedAt = (java.lang.CharSequence)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+      case 0: userId = (java.lang.CharSequence)value$; break;
+      case 1: userEmail = (java.lang.CharSequence)value$; break;
+      case 2: userName = (java.lang.CharSequence)value$; break;
+      case 3: badgeName = (java.lang.CharSequence)value$; break;
+      case 4: badgeLevel = (java.lang.CharSequence)value$; break;
+      case 5: description = (java.lang.CharSequence)value$; break;
+      case 6: earnedAt = (java.lang.CharSequence)value$; break;
+      default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -302,7 +302,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    */
   @org.apache.avro.specific.AvroGenerated
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AchievementUnlocked>
-    implements org.apache.avro.data.RecordBuilder<AchievementUnlocked> {
+          implements org.apache.avro.data.RecordBuilder<AchievementUnlocked> {
 
     private java.lang.CharSequence userId;
     private java.lang.CharSequence userEmail;
@@ -390,19 +390,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'userId' field.
-      * @return The value.
-      */
+     * Gets the value of the 'userId' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getUserId() {
       return userId;
     }
 
 
     /**
-      * Sets the value of the 'userId' field.
-      * @param value The value of 'userId'.
-      * @return This builder.
-      */
+     * Sets the value of the 'userId' field.
+     * @param value The value of 'userId'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setUserId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.userId = value;
@@ -411,18 +411,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'userId' field has been set.
-      * @return True if the 'userId' field has been set, false otherwise.
-      */
+     * Checks whether the 'userId' field has been set.
+     * @return True if the 'userId' field has been set, false otherwise.
+     */
     public boolean hasUserId() {
       return fieldSetFlags()[0];
     }
 
 
     /**
-      * Clears the value of the 'userId' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'userId' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserId() {
       userId = null;
       fieldSetFlags()[0] = false;
@@ -430,19 +430,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'userEmail' field.
-      * @return The value.
-      */
+     * Gets the value of the 'userEmail' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getUserEmail() {
       return userEmail;
     }
 
 
     /**
-      * Sets the value of the 'userEmail' field.
-      * @param value The value of 'userEmail'.
-      * @return This builder.
-      */
+     * Sets the value of the 'userEmail' field.
+     * @param value The value of 'userEmail'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setUserEmail(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.userEmail = value;
@@ -451,18 +451,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'userEmail' field has been set.
-      * @return True if the 'userEmail' field has been set, false otherwise.
-      */
+     * Checks whether the 'userEmail' field has been set.
+     * @return True if the 'userEmail' field has been set, false otherwise.
+     */
     public boolean hasUserEmail() {
       return fieldSetFlags()[1];
     }
 
 
     /**
-      * Clears the value of the 'userEmail' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'userEmail' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserEmail() {
       userEmail = null;
       fieldSetFlags()[1] = false;
@@ -470,19 +470,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'userName' field.
-      * @return The value.
-      */
+     * Gets the value of the 'userName' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getUserName() {
       return userName;
     }
 
 
     /**
-      * Sets the value of the 'userName' field.
-      * @param value The value of 'userName'.
-      * @return This builder.
-      */
+     * Sets the value of the 'userName' field.
+     * @param value The value of 'userName'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setUserName(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.userName = value;
@@ -491,18 +491,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'userName' field has been set.
-      * @return True if the 'userName' field has been set, false otherwise.
-      */
+     * Checks whether the 'userName' field has been set.
+     * @return True if the 'userName' field has been set, false otherwise.
+     */
     public boolean hasUserName() {
       return fieldSetFlags()[2];
     }
 
 
     /**
-      * Clears the value of the 'userName' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'userName' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserName() {
       userName = null;
       fieldSetFlags()[2] = false;
@@ -510,19 +510,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'badgeName' field.
-      * @return The value.
-      */
+     * Gets the value of the 'badgeName' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getBadgeName() {
       return badgeName;
     }
 
 
     /**
-      * Sets the value of the 'badgeName' field.
-      * @param value The value of 'badgeName'.
-      * @return This builder.
-      */
+     * Sets the value of the 'badgeName' field.
+     * @param value The value of 'badgeName'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeName(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.badgeName = value;
@@ -531,18 +531,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'badgeName' field has been set.
-      * @return True if the 'badgeName' field has been set, false otherwise.
-      */
+     * Checks whether the 'badgeName' field has been set.
+     * @return True if the 'badgeName' field has been set, false otherwise.
+     */
     public boolean hasBadgeName() {
       return fieldSetFlags()[3];
     }
 
 
     /**
-      * Clears the value of the 'badgeName' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'badgeName' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeName() {
       badgeName = null;
       fieldSetFlags()[3] = false;
@@ -550,19 +550,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'badgeLevel' field.
-      * @return The value.
-      */
+     * Gets the value of the 'badgeLevel' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getBadgeLevel() {
       return badgeLevel;
     }
 
 
     /**
-      * Sets the value of the 'badgeLevel' field.
-      * @param value The value of 'badgeLevel'.
-      * @return This builder.
-      */
+     * Sets the value of the 'badgeLevel' field.
+     * @param value The value of 'badgeLevel'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeLevel(java.lang.CharSequence value) {
       validate(fields()[4], value);
       this.badgeLevel = value;
@@ -571,18 +571,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'badgeLevel' field has been set.
-      * @return True if the 'badgeLevel' field has been set, false otherwise.
-      */
+     * Checks whether the 'badgeLevel' field has been set.
+     * @return True if the 'badgeLevel' field has been set, false otherwise.
+     */
     public boolean hasBadgeLevel() {
       return fieldSetFlags()[4];
     }
 
 
     /**
-      * Clears the value of the 'badgeLevel' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'badgeLevel' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeLevel() {
       badgeLevel = null;
       fieldSetFlags()[4] = false;
@@ -590,19 +590,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'description' field.
-      * @return The value.
-      */
+     * Gets the value of the 'description' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getDescription() {
       return description;
     }
 
 
     /**
-      * Sets the value of the 'description' field.
-      * @param value The value of 'description'.
-      * @return This builder.
-      */
+     * Sets the value of the 'description' field.
+     * @param value The value of 'description'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setDescription(java.lang.CharSequence value) {
       validate(fields()[5], value);
       this.description = value;
@@ -611,18 +611,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'description' field has been set.
-      * @return True if the 'description' field has been set, false otherwise.
-      */
+     * Checks whether the 'description' field has been set.
+     * @return True if the 'description' field has been set, false otherwise.
+     */
     public boolean hasDescription() {
       return fieldSetFlags()[5];
     }
 
 
     /**
-      * Clears the value of the 'description' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'description' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearDescription() {
       description = null;
       fieldSetFlags()[5] = false;
@@ -630,19 +630,19 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Gets the value of the 'earnedAt' field.
-      * @return The value.
-      */
+     * Gets the value of the 'earnedAt' field.
+     * @return The value.
+     */
     public java.lang.CharSequence getEarnedAt() {
       return earnedAt;
     }
 
 
     /**
-      * Sets the value of the 'earnedAt' field.
-      * @param value The value of 'earnedAt'.
-      * @return This builder.
-      */
+     * Sets the value of the 'earnedAt' field.
+     * @param value The value of 'earnedAt'.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder setEarnedAt(java.lang.CharSequence value) {
       validate(fields()[6], value);
       this.earnedAt = value;
@@ -651,18 +651,18 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     }
 
     /**
-      * Checks whether the 'earnedAt' field has been set.
-      * @return True if the 'earnedAt' field has been set, false otherwise.
-      */
+     * Checks whether the 'earnedAt' field has been set.
+     * @return True if the 'earnedAt' field has been set, false otherwise.
+     */
     public boolean hasEarnedAt() {
       return fieldSetFlags()[6];
     }
 
 
     /**
-      * Clears the value of the 'earnedAt' field.
-      * @return This builder.
-      */
+     * Clears the value of the 'earnedAt' field.
+     * @return This builder.
+     */
     public comp41720.cinequest.events.AchievementUnlocked.Builder clearEarnedAt() {
       earnedAt = null;
       fieldSetFlags()[6] = false;
@@ -692,26 +692,26 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
 
   @SuppressWarnings("unchecked")
   private static final org.apache.avro.io.DatumWriter<AchievementUnlocked>
-    WRITER$ = (org.apache.avro.io.DatumWriter<AchievementUnlocked>)MODEL$.createDatumWriter(SCHEMA$);
+          WRITER$ = (org.apache.avro.io.DatumWriter<AchievementUnlocked>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
-    throws java.io.IOException {
+          throws java.io.IOException {
     WRITER$.write(this, SpecificData.getEncoder(out));
   }
 
   @SuppressWarnings("unchecked")
   private static final org.apache.avro.io.DatumReader<AchievementUnlocked>
-    READER$ = (org.apache.avro.io.DatumReader<AchievementUnlocked>)MODEL$.createDatumReader(SCHEMA$);
+          READER$ = (org.apache.avro.io.DatumReader<AchievementUnlocked>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
-    throws java.io.IOException {
+          throws java.io.IOException {
     READER$.read(this, SpecificData.getDecoder(in));
   }
 
   @Override protected boolean hasCustomCoders() { return true; }
 
   @Override public void customEncode(org.apache.avro.io.Encoder out)
-    throws java.io.IOException
+          throws java.io.IOException
   {
     out.writeString(this.userId);
 
@@ -730,7 +730,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
   }
 
   @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
-    throws java.io.IOException
+          throws java.io.IOException
   {
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
@@ -751,36 +751,36 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
     } else {
       for (int i = 0; i < 7; i++) {
         switch (fieldOrder[i].pos()) {
-        case 0:
-          this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
-          break;
+          case 0:
+            this.userId = in.readString(this.userId instanceof Utf8 ? (Utf8)this.userId : null);
+            break;
 
-        case 1:
-          this.userEmail = in.readString(this.userEmail instanceof Utf8 ? (Utf8)this.userEmail : null);
-          break;
+          case 1:
+            this.userEmail = in.readString(this.userEmail instanceof Utf8 ? (Utf8)this.userEmail : null);
+            break;
 
-        case 2:
-          this.userName = in.readString(this.userName instanceof Utf8 ? (Utf8)this.userName : null);
-          break;
+          case 2:
+            this.userName = in.readString(this.userName instanceof Utf8 ? (Utf8)this.userName : null);
+            break;
 
-        case 3:
-          this.badgeName = in.readString(this.badgeName instanceof Utf8 ? (Utf8)this.badgeName : null);
-          break;
+          case 3:
+            this.badgeName = in.readString(this.badgeName instanceof Utf8 ? (Utf8)this.badgeName : null);
+            break;
 
-        case 4:
-          this.badgeLevel = in.readString(this.badgeLevel instanceof Utf8 ? (Utf8)this.badgeLevel : null);
-          break;
+          case 4:
+            this.badgeLevel = in.readString(this.badgeLevel instanceof Utf8 ? (Utf8)this.badgeLevel : null);
+            break;
 
-        case 5:
-          this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
-          break;
+          case 5:
+            this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+            break;
 
-        case 6:
-          this.earnedAt = in.readString(this.earnedAt instanceof Utf8 ? (Utf8)this.earnedAt : null);
-          break;
+          case 6:
+            this.earnedAt = in.readString(this.earnedAt instanceof Utf8 ? (Utf8)this.earnedAt : null);
+            break;
 
-        default:
-          throw new java.io.IOException("Corrupt ResolvingDecoder.");
+          default:
+            throw new java.io.IOException("Corrupt ResolvingDecoder.");
         }
       }
     }

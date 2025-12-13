@@ -108,7 +108,7 @@ public class AchievementService {
             .setEarnedAt(earnedAt.toString())
             .build();
         
-        kafkaTemplate.send("achievement_unlocked", userId, event);
+        kafkaTemplate.send("achievement_unlocked", event);
         log.info("Published achievement_unlocked event for userId={}, badge={}, userEmail={}, userName={}", 
                  userId, badgeDef.name, userEmail, userName);
     }
