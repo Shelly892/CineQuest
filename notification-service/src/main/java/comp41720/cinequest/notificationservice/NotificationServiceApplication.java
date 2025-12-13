@@ -1,4 +1,4 @@
-package com.cinequest.notificationservice;
+package comp41720.cinequest.notificationservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

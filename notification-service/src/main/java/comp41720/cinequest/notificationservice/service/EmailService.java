@@ -1,4 +1,4 @@
-package com.cinequest.notificationservice.service;
+package comp41720.cinequest.notificationservice.service;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

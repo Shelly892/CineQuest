@@ -3,9 +3,8 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package com.cinequest.notificationservice.events;
+package comp41720.cinequest.events;
 
-import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.avro.message.BinaryMessageEncoder;
@@ -14,10 +13,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 3558840895997433130L;
+  private static final long serialVersionUID = -2306463114266537033L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AchievementUnlocked\",\"namespace\":\"com.cinequest.notificationservice.events\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"userEmail\",\"type\":\"string\"},{\"name\":\"userName\",\"type\":\"string\"},{\"name\":\"badgeName\",\"type\":\"string\"},{\"name\":\"badgeLevel\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"earnedAt\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AchievementUnlocked\",\"namespace\":\"comp41720.cinequest.events\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"userEmail\",\"type\":\"string\"},{\"name\":\"userName\",\"type\":\"string\"},{\"name\":\"badgeName\",\"type\":\"string\"},{\"name\":\"badgeLevel\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"earnedAt\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -268,8 +267,8 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    * Creates a new AchievementUnlocked RecordBuilder.
    * @return A new AchievementUnlocked RecordBuilder
    */
-  public static com.cinequest.notificationservice.events.AchievementUnlocked.Builder newBuilder() {
-    return new com.cinequest.notificationservice.events.AchievementUnlocked.Builder();
+  public static comp41720.cinequest.events.AchievementUnlocked.Builder newBuilder() {
+    return new comp41720.cinequest.events.AchievementUnlocked.Builder();
   }
 
   /**
@@ -277,11 +276,11 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    * @param other The existing builder to copy.
    * @return A new AchievementUnlocked RecordBuilder
    */
-  public static com.cinequest.notificationservice.events.AchievementUnlocked.Builder newBuilder(com.cinequest.notificationservice.events.AchievementUnlocked.Builder other) {
+  public static comp41720.cinequest.events.AchievementUnlocked.Builder newBuilder(comp41720.cinequest.events.AchievementUnlocked.Builder other) {
     if (other == null) {
-      return new com.cinequest.notificationservice.events.AchievementUnlocked.Builder();
+      return new comp41720.cinequest.events.AchievementUnlocked.Builder();
     } else {
-      return new com.cinequest.notificationservice.events.AchievementUnlocked.Builder(other);
+      return new comp41720.cinequest.events.AchievementUnlocked.Builder(other);
     }
   }
 
@@ -290,11 +289,11 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
    * @param other The existing instance to copy.
    * @return A new AchievementUnlocked RecordBuilder
    */
-  public static com.cinequest.notificationservice.events.AchievementUnlocked.Builder newBuilder(com.cinequest.notificationservice.events.AchievementUnlocked other) {
+  public static comp41720.cinequest.events.AchievementUnlocked.Builder newBuilder(comp41720.cinequest.events.AchievementUnlocked other) {
     if (other == null) {
-      return new com.cinequest.notificationservice.events.AchievementUnlocked.Builder();
+      return new comp41720.cinequest.events.AchievementUnlocked.Builder();
     } else {
-      return new com.cinequest.notificationservice.events.AchievementUnlocked.Builder(other);
+      return new comp41720.cinequest.events.AchievementUnlocked.Builder(other);
     }
   }
 
@@ -322,7 +321,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(com.cinequest.notificationservice.events.AchievementUnlocked.Builder other) {
+    private Builder(comp41720.cinequest.events.AchievementUnlocked.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.userId)) {
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
@@ -358,7 +357,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
      * Creates a Builder by copying an existing AchievementUnlocked instance
      * @param other The existing instance to copy.
      */
-    private Builder(com.cinequest.notificationservice.events.AchievementUnlocked other) {
+    private Builder(comp41720.cinequest.events.AchievementUnlocked other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.userId)) {
         this.userId = data().deepCopy(fields()[0].schema(), other.userId);
@@ -404,7 +403,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'userId'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setUserId(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setUserId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.userId = value;
       fieldSetFlags()[0] = true;
@@ -424,7 +423,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'userId' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearUserId() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserId() {
       userId = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -444,7 +443,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'userEmail'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setUserEmail(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setUserEmail(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.userEmail = value;
       fieldSetFlags()[1] = true;
@@ -464,7 +463,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'userEmail' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearUserEmail() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserEmail() {
       userEmail = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -484,7 +483,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'userName'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setUserName(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setUserName(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.userName = value;
       fieldSetFlags()[2] = true;
@@ -504,7 +503,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'userName' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearUserName() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearUserName() {
       userName = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -524,7 +523,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'badgeName'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setBadgeName(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeName(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.badgeName = value;
       fieldSetFlags()[3] = true;
@@ -544,7 +543,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'badgeName' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearBadgeName() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeName() {
       badgeName = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -564,7 +563,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'badgeLevel'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setBadgeLevel(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setBadgeLevel(java.lang.CharSequence value) {
       validate(fields()[4], value);
       this.badgeLevel = value;
       fieldSetFlags()[4] = true;
@@ -584,7 +583,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'badgeLevel' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearBadgeLevel() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearBadgeLevel() {
       badgeLevel = null;
       fieldSetFlags()[4] = false;
       return this;
@@ -604,7 +603,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'description'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setDescription(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setDescription(java.lang.CharSequence value) {
       validate(fields()[5], value);
       this.description = value;
       fieldSetFlags()[5] = true;
@@ -624,7 +623,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'description' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearDescription() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearDescription() {
       description = null;
       fieldSetFlags()[5] = false;
       return this;
@@ -644,7 +643,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'earnedAt'.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder setEarnedAt(java.lang.CharSequence value) {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder setEarnedAt(java.lang.CharSequence value) {
       validate(fields()[6], value);
       this.earnedAt = value;
       fieldSetFlags()[6] = true;
@@ -664,7 +663,7 @@ public class AchievementUnlocked extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'earnedAt' field.
       * @return This builder.
       */
-    public com.cinequest.notificationservice.events.AchievementUnlocked.Builder clearEarnedAt() {
+    public comp41720.cinequest.events.AchievementUnlocked.Builder clearEarnedAt() {
       earnedAt = null;
       fieldSetFlags()[6] = false;
       return this;

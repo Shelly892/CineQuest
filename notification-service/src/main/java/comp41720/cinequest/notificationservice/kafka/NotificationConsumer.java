@@ -1,7 +1,7 @@
-package com.cinequest.notificationservice.kafka;
+package comp41720.cinequest.notificationservice.kafka;
 
-import com.cinequest.notificationservice.events.AchievementUnlocked;
-import com.cinequest.notificationservice.service.EmailService;
+import comp41720.cinequest.events.AchievementUnlocked;
+import comp41720.cinequest.notificationservice.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,7 +21,7 @@ public class NotificationConsumer {
 
         try {
 
-            if (event.getUserEmail() == null || event.getUserName() == null || 
+            if (event.getUserEmail() == null || event.getUserName() == null ||
                 event.getBadgeName() == null || event.getDescription() == null ||
                 event.getBadgeLevel() == null || event.getEarnedAt() == null) {
                 log.warn("Received event with missing required fields: {}", event);
@@ -39,7 +39,7 @@ public class NotificationConsumer {
             log.info("Achievement email sent to {}", event.getUserEmail());
         } catch (Exception e) {
             log.error("Failed to process achievement event: {}", e.getMessage(), e);
-            throw e; 
+            throw e;
         }
     }
 }
