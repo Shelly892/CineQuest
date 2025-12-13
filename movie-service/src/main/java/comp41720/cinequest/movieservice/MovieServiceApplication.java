@@ -1,4 +1,4 @@
-package com.cinequest.movieservice;
+package comp41720.cinequest.movieservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

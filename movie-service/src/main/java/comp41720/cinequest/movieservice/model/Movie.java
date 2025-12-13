@@ -1,4 +1,4 @@
-package com.cinequest.movieservice.model;
+package comp41720.cinequest.movieservice.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

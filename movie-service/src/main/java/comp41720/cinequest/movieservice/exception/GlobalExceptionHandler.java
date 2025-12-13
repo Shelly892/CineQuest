@@ -1,4 +1,4 @@
-package com.cinequest.movieservice.exception;
+package comp41720.cinequest.movieservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

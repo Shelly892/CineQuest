@@ -1,10 +1,9 @@
-package com.cinequest.movieservice.service;
+package comp41720.cinequest.movieservice.service;
 
-import com.cinequest.movieservice.model.Movie;
-import com.cinequest.movieservice.model.TMDBResponse;
+import comp41720.cinequest.movieservice.model.Movie;
+import comp41720.cinequest.movieservice.model.TMDBResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

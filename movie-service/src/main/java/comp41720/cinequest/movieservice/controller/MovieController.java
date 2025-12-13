@@ -1,8 +1,8 @@
-package com.cinequest.movieservice.controller;
+package comp41720.cinequest.movieservice.controller;
 
-import com.cinequest.movieservice.model.Movie;
-import com.cinequest.movieservice.model.TMDBResponse;
-import com.cinequest.movieservice.service.TMDBService;
+import comp41720.cinequest.movieservice.model.Movie;
+import comp41720.cinequest.movieservice.model.TMDBResponse;
+import comp41720.cinequest.movieservice.service.TMDBService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.cinequest.movieservice.config;
+package comp41720.cinequest.movieservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

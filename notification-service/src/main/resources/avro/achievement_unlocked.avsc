@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "AchievementUnlocked",
-  "namespace": "com.cinequest.notificationservice.events",
+  "namespace": "comp41720.cinequest.events",
   "fields": [
     { "name": "userId", "type": "string" },
     { "name": "userEmail", "type": "string" },
