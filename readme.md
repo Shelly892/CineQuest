@@ -14,36 +14,31 @@ flowchart TD
     
     %% Microservices
     C[User Service Port: 3001
-    • Keycloak
-    • PostgreSQL & Redis
+    • Keycloak & MySQL
     <i><u>Fan Ke</u></i>]
     
     D[Movie Service Port: 3002
-    • TMDB API Proxy
+    • TMDB API Proxy & Redis
     • Circuit Breaker & Retry & Timeout
     <i><u>Shuangning Wei</u></i>]
     
     E[Rating Service Port: 3003
-    • Mongodb & Redis
+    • Mongodb
     <i><u>Ze Li</u></i>]
     
     F[Sign Service Port: 3004
-    • PostgreSQL & Redis
+    • PostgreSQL
     <i><u>Ze Li</u></i>]
     
     G[Achievement Service Port: 3005
     • Kafka Producer
-    • Mongodb & Redis
+    • Mongodb
     <i><u>Ze Li</u></i>]
     
     H[Notification Service Port: 3006
     • Mailtrap
     • Kafka Consumer
     <i><u>Shuangning Wei</u></i>]
-    
-    I[Grafana Observability
-    • Prometheus, Loki, Tempo
-    <i><u>Ze Li</u></i>]
     
     %% Connections
     A -->|rest| B

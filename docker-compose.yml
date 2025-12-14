@@ -60,8 +60,6 @@ services:
 #    container_name: redis-cinequest
 #    ports:
 #      - "6379:6379"
-#    networks:
-#      - cinequest-network
 
   # manage cluster state(topic partition, broker state and message, etc.)
   zookeeper:
@@ -177,41 +175,35 @@ services:
 #      TMDB_API_KEY: ${TMDB_API_KEY}
 #      REDIS_HOST: redis
 #      REDIS_PORT: 6379
-#    networks:
-#      - cinequest-network
 
-  notification-service:
-    build:
-      context: ./notification-service
-      dockerfile: Dockerfile
-    container_name: notification-service-cinequest
-    ports:
-      - "3006:3006"
-    depends_on:
-      - broker
-      - schema-registry
-    environment:
-      MAIL_HOST: ${MAIL_HOST}
-      MAIL_PORT: ${MAIL_PORT}
-      MAIL_USERNAME: ${MAIL_USERNAME}
-      MAIL_PASSWORD: ${MAIL_PASSWORD}
-      KAFKA_BOOTSTRAP_SERVERS: broker:29092
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    networks:
-      - cinequest-network
+#  notification-service:
+#    build:
+#      context: ./notification-service
+#      dockerfile: Dockerfile
+#    container_name: notification-service-cinequest
+#    ports:
+#      - "3006:3006"
+#    depends_on:
+#      - broker
+#      - schema-registry
+#    environment:
+#      MAIL_HOST: ${MAIL_HOST}
+#      MAIL_PORT: ${MAIL_PORT}
+#      MAIL_USERNAME: ${MAIL_USERNAME}
+#      MAIL_PASSWORD: ${MAIL_PASSWORD}
+#      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+#      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   # Keycloak Database
   keycloak-mysql:
     image: mysql:8
     volumes:
-      - ./data_volume/mysql_keycloak_data:/var/lib/mysql
+      - keycloak_mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: keycloak
       MYSQL_USER: keycloak
       MYSQL_PASSWORD: password
-    networks:
-      - cinequest-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
@@ -232,39 +224,26 @@ services:
       - "3001:8080"
     depends_on:
       - keycloak-mysql
-    networks:
-      - cinequest-network
     volumes:
-      - ./data_volume/keycloak/realms/:/opt/keycloak/data/import/
+      - ./keycloak/:/opt/keycloak/data/import/
 
 #  # Gateway Service
-  gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    container_name: gateway
-    ports:
-      - "8000:8000"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
-      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
-      GATEWAY_SERVICES_RATING: http://rating-service:3003
-      GATEWAY_SERVICES_SIGN: http://sign-service:3004
-      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
-      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/cinequest
-    depends_on:
-      keycloak:
-        condition: service_healthy
-    networks:
-      - cinequest-network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+#  gateway:
+#    build:
+#      context: ./gateway
+#      dockerfile: Dockerfile
+#    container_name: gateway
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      GATEWAY_SERVICES_KEYCLOAK: http://keycloak:8080
+#      GATEWAY_SERVICES_MOVIE: http://movie-service:3002
+#      GATEWAY_SERVICES_RATING: http://rating-service:3003
+#      GATEWAY_SERVICES_SIGN: http://sign-service:3004
+#      GATEWAY_SERVICES_ACHIEVEMENT: http://achievement-service:3005
+#      GATEWAY_SERVICES_NOTIFICATION: http://notification-service:3006
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/keycloak/realms/cinequest
 
 volumes:
   sign_postgres_data:
@@ -297,7 +276,9 @@ volumes:
       type: none
       o: bind
       device: ./data_volume/mongodb-achievement/configdb
-
-networks:
-  cinequest-network:
-    driver: bridge
+  keycloak_mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data_volume/mysql_keycloak_data

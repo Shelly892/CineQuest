@@ -13,103 +13,33 @@ spring:
       achievement: ${ACHIEVEMENT_SERVICE_URL:http://localhost:3005}
       notification: ${NOTIFICATION_SERVICE_URL:http://localhost:3006}
 
-  
-  # Circuit breaker configuration
-  cloud:
-    circuitbreaker:
-      resilience4j:
-        configs:
-          default:
-            slidingWindowSize: 10
-            minimumNumberOfCalls: 5
-            permittedNumberOfCallsInHalfOpenState: 3
-            automaticTransitionFromOpenToHalfOpenEnabled: true
-            waitDurationInOpenState: 10s
-            failureRateThreshold: 50
-            eventConsumerBufferSize: 10
-        instances:
-          movieServiceCircuitBreaker:
-            baseConfig: default
-          ratingServiceCircuitBreaker:
-            baseConfig: default
-          signServiceCircuitBreaker:
-            baseConfig: default
-          achievementServiceCircuitBreaker:
-            baseConfig: default
-          notificationServiceCircuitBreaker:
-            baseConfig: default
-          userServiceCircuitBreaker:
-            baseConfig: default
-  
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/cinequest
+          issuer-uri: ${KEYCLOAK_SERVICE_URL:http://localhost:3001}/keycloak/realms/cinequest
 
-# Resilience4j configuration for timeout and retry
 resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        minimumNumberOfCalls: 5
   timelimiter:
     configs:
       default:
         timeoutDuration: 3s
-    instances:
-      movieServiceTimeout:
-        baseConfig: default
-      ratingServiceTimeout:
-        baseConfig: default
-      signServiceTimeout:
-        baseConfig: default
-      achievementServiceTimeout:
-        baseConfig: default
-      notificationServiceTimeout:
-        baseConfig: default
-      userServiceTimeout:
-        baseConfig: default
   retry:
     configs:
       default:
         maxAttempts: 3
-        waitDuration: 500ms
-        retryExceptions:
-          - java.net.ConnectException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.ResourceAccessException
-    instances:
-      movieServiceRetry:
-        baseConfig: default
-      ratingServiceRetry:
-        baseConfig: default
-      signServiceRetry:
-        baseConfig: default
-      achievementServiceRetry:
-        baseConfig: default
-      notificationServiceRetry:
-        baseConfig: default
-      userServiceRetry:
-        baseConfig: default
+        waitDuration: 2s
 
 server:
   port: 8000
-
-# Actuator configuration for health checks
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: when-authorized
-
-logging:
-  level:
-    root: INFO
-    com.cinequest.gateway: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.web: DEBUG
-
-# CineQuest custom configuration
-cinequest:
-  keycloak-service-url: http://keycloak:8080
-
