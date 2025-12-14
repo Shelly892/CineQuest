@@ -204,6 +204,12 @@ services:
       MYSQL_DATABASE: keycloak
       MYSQL_USER: keycloak
       MYSQL_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
@@ -223,7 +229,8 @@ services:
     ports:
       - "3001:8080"
     depends_on:
-      - keycloak-mysql
+      keycloak-mysql:
+        condition: service_healthy
     volumes:
       - ./keycloak/:/opt/keycloak/data/import/
 
