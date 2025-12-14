@@ -1,28 +1,21 @@
 import { QueryClient } from "@tanstack/react-query";
-import { QUERY_CONFIG } from "./constants";
 
-// Instantiate a configured QueryClient
+// ==================== Query Client Configuration ====================
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: QUERY_CONFIG.STALE_TIME,
-      cacheTime: QUERY_CONFIG.CACHE_TIME,
-      retry: QUERY_CONFIG.RETRY,
-      refetchOnWindowFocus: QUERY_CONFIG.REFETCH_ON_WINDOW_FOCUS,
-      onError: (error) => {
-        console.error("[Query Error]", error);
-      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
     },
     mutations: {
-      retry: 1,
-      onError: (error) => {
-        console.error("[Mutation Error]", error);
-      },
+      retry: 0,
     },
   },
 });
 
-// Query Keys - centralized definitions
+// ==================== Query Keys ====================
 export const queryKeys = {
   // Authentication
   auth: {
@@ -32,20 +25,27 @@ export const queryKeys = {
   // Movies
   movies: {
     all: ["movies"],
-    popular: (page) => ["movies", "popular", page],
-    search: (query, page) => ["movies", "search", query, page],
+    popular: (page = 1) => ["movies", "popular", page],
+    search: (query, page = 1) => ["movies", "search", query, page],
     detail: (id) => ["movies", "detail", id],
-    recommendations: (id) => ["movies", "recommendations", id],
-    nowPlaying: (page) => ["movies", "nowPlaying", page],
-    upcoming: (page) => ["movies", "upcoming", page],
-    topRated: (page) => ["movies", "topRated", page],
   },
 
   // Ratings
   ratings: {
     all: ["ratings"],
-    userRating: (movieId) => ["ratings", "userRating", movieId],
-    userRatings: (page) => ["ratings", "userRatings", page],
-    movieRatings: (movieId, page) => ["ratings", "movieRatings", movieId, page],
+    user: (userId) => ["ratings", "user", userId],
+    movie: (movieId) => ["ratings", "movie", movieId],
+  },
+
+  // Sign-in
+  sign: {
+    all: ["sign"],
+    userHistory: (userId) => ["sign", "user", userId],
+  },
+
+  // Achievements
+  achievements: {
+    all: ["achievements"],
+    user: (userId) => ["achievements", "user", userId],
   },
 };

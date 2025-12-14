@@ -2,35 +2,20 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { authApi } from "./api";
+import Movies from "./pages/Movies";
+import MovieDetail from "./pages/MovieDetail";
+import Ratings from "./pages/Ratings";
+import SignIn from "./pages/SignIn";
+import Achievements from "./pages/Achievements";
 
-// ==================== Protected routes ====================
-// Require authentication before rendering
-// const ProtectedRoute = ({ children }) => {
-//   const isAuthenticated = authApi.isAuthenticated();
+// ==================== Protected Route Component ====================
+// Will be wrapped with Keycloak check in the component itself
+const ProtectedRoute = ({ children }) => {
+  // Keycloak authentication check is handled by useKeycloak hook in each component
+  return children;
+};
 
-//   if (!isAuthenticated) {
-//     // Redirect unauthenticated users to the login screen
-//     return <Navigate to="/login" replace />;
-//   }
-
-//   return children;
-// };
-
-// // ==================== Public routes ====================
-// // Redirect authenticated users back to the home page
-// const PublicRoute = ({ children }) => {
-//   const isAuthenticated = authApi.isAuthenticated();
-
-//   if (isAuthenticated) {
-//     // Already signed in; send the user home
-//     return <Navigate to="/" replace />;
-//   }
-
-//   return children;
-// };
-
-// ==================== Router configuration ====================
+// ==================== Router Configuration ====================
 export const router = createBrowserRouter([
   // Primary layout route (includes header and footer)
   {
@@ -41,23 +26,38 @@ export const router = createBrowserRouter([
         index: true, // Default route: /
         element: <Home />,
       },
-      // Additional routes can be added here
-      // {
-      //   path: 'movies',
-      //   element: (
-      //     <ProtectedRoute>
-      //       <Movies />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: 'movies/:id',
-      //   element: (
-      //     <ProtectedRoute>
-      //       <MovieDetail />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "movies",
+        element: <Movies />,
+      },
+      {
+        path: "movies/:id",
+        element: <MovieDetail />,
+      },
+      {
+        path: "ratings",
+        element: (
+          <ProtectedRoute>
+            <Ratings />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "sign-in",
+        element: (
+          <ProtectedRoute>
+            <SignIn />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "achievements",
+        element: (
+          <ProtectedRoute>
+            <Achievements />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 
@@ -67,9 +67,9 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
 
-  // 404 page (optional, add later)
-  // {
-  //   path: '*',
-  //   element: <NotFound />,
-  // },
+  // Catch-all redirect
+  {
+    path: "*",
+    element: <Navigate to="/" replace />,
+  },
 ]);

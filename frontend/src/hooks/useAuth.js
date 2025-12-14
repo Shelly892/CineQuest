@@ -1,68 +1,71 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate } from "react-router-dom";
-import { authApi } from "../api";
-import { queryKeys } from "../config/queryClient";
-
-// ==================== Fetch current user ====================
-export const useCurrentUser = () => {
-  return useQuery({
-    queryKey: queryKeys.auth.currentUser,
-    queryFn: authApi.getCurrentUser,
-    enabled: authApi.isAuthenticated(), // Only run the query when authenticated
-    staleTime: Infinity, // Keep user data fresh indefinitely
-    retry: false,
-  });
-};
 
 // ==================== Sign in ====================
 export const useLogin = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { keycloak, initialized } = useKeycloak();
 
-  return useMutation({
-    mutationFn: ({ username, password }) => authApi.login(username, password),
-    onSuccess: (data) => {
-      // Seed the React Query cache with the authenticated user
-      queryClient.setQueryData(queryKeys.auth.currentUser, data.user);
+  const login = () => {
+    if (!initialized) {
+      console.warn("[Login] Keycloak not initialized yet");
+      return;
+    }
 
-      console.log("[Login Success]", data.user);
+    keycloak
+      .login()
+      .then(() => {
+        console.log("[Login Success] User authenticated");
+      })
+      .catch((error) => {
+        console.error("[Login Failed]", error);
+      });
+  };
 
-      // Redirect to the home page
-      navigate("/");
-    },
-    onError: (error) => {
-      console.error("[Login Failed]", error);
-    },
-  });
+  return login;
 };
 
 // ==================== Sign out ====================
 export const useLogout = () => {
+  const { keycloak, initialized } = useKeycloak();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: () => {
-      // Clear all cached data
-      queryClient.clear();
+  const logout = () => {
+    if (!initialized) {
+      console.warn("[Logout] Keycloak not initialized yet");
+      return;
+    }
 
-      console.log("[Logout Success]");
+    keycloak
+      .logout()
+      .then(() => {
+        console.log("[Logout Success] User logged out");
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("[Logout Failed]", error);
+      });
+  };
 
-      // Redirect to the login screen
-      navigate("/login");
-    },
-  });
+  return logout;
 };
 
 // ==================== Authentication status ====================
-export const useAuth = () => {
-  const { data: user, isLoading } = useCurrentUser();
-  const isAuthenticated = authApi.isAuthenticated();
+const useAuth = () => {
+  const { keycloak, initialized } = useKeycloak();
 
   return {
-    user,
-    isLoading,
-    isAuthenticated,
+    isAuthenticated: initialized && keycloak.authenticated,
+    isLoading: !initialized,
+    user: keycloak.authenticated
+      ? {
+          username: keycloak.tokenParsed?.preferred_username,
+          email: keycloak.tokenParsed?.email,
+          id: keycloak.tokenParsed?.sub,
+        }
+      : null,
+    keycloak,
+    initialized,
   };
 };
+
+export default useAuth;

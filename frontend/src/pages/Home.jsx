@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { usePopularMovies } from "../hooks/useMovies";
 import FadeIn from "../components/common/FadeIn";
 import StaggerContainer, {
   StaggerItem,
@@ -8,59 +10,20 @@ import MovieCard from "../components/features/MovieCard";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
-  // Mock data - trending movies
-  const trendingMovies = [
-    {
-      id: 1,
-      title: "The Midnight Echo",
-      genre: "Action",
-      rating: 8.5,
-      poster: "https://via.placeholder.com/240x360/667eea/ffffff?text=Movie+1",
-    },
-    {
-      id: 2,
-      title: "Starlight Symphony",
-      genre: "Drama",
-      rating: 9.2,
-      poster: "https://via.placeholder.com/240x360/764ba2/ffffff?text=Movie+2",
-    },
-    {
-      id: 3,
-      title: "Crimson Horizon",
-      genre: "Thriller",
-      rating: 8.8,
-      poster: "https://via.placeholder.com/240x360/f093fb/ffffff?text=Movie+3",
-    },
-    {
-      id: 4,
-      title: "Whispers of the Past",
-      genre: "Mystery",
-      rating: 7.9,
-      poster: "https://via.placeholder.com/240x360/4facfe/ffffff?text=Movie+4",
-    },
-    {
-      id: 5,
-      title: "Eternal Embers",
-      genre: "Romance",
-      rating: 8.1,
-      poster: "https://via.placeholder.com/240x360/00f2fe/ffffff?text=Movie+5",
-    },
-  ];
+  // Fetch popular movies from API
+  const { data: moviesData, isLoading } = usePopularMovies(1);
 
-  // Mock data - recommended movies
-  const recommendedMovies = Array.from({ length: 12 }, (_, i) => ({
-    id: i + 6,
-    title: `Movie ${i + 6}`,
-    rating: (Math.random() * 3 + 7).toFixed(1),
-    poster: `https://via.placeholder.com/240x360/8d25f4/ffffff?text=Movie+${
-      i + 6
-    }`,
-  }));
+  // Get trending movies (first 5) and recommended movies (rest)
+  const trendingMovies = moviesData?.results?.slice(0, 5) || [];
+  const recommendedMovies = moviesData?.results?.slice(5, 17) || [];
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    if (searchQuery.trim()) {
+      navigate(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
 
   return (
@@ -169,29 +132,41 @@ export default function Home() {
           </h2>
         </FadeIn>
 
-        <div className="overflow-x-auto scrollbar-hide">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="flex items-stretch p-4 gap-3"
-          >
-            {trendingMovies.map((movie, index) => (
-              <motion.div
-                key={movie.id}
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: 0.5 + index * 0.1,
-                  duration: 0.5,
-                }}
-                className="flex-shrink-0 w-60"
-              >
-                <MovieCard movie={movie} index={index} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto scrollbar-hide">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="flex items-stretch p-4 gap-3"
+            >
+              {trendingMovies.length > 0 ? (
+                trendingMovies.map((movie, index) => (
+                  <motion.div
+                    key={movie.id}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 0.5 + index * 0.1,
+                      duration: 0.5,
+                    }}
+                    className="flex-shrink-0 w-60"
+                  >
+                    <MovieCard movie={movie} index={index} />
+                  </motion.div>
+                ))
+              ) : (
+                <p className="text-[#ab9cba] px-4">
+                  No trending movies available
+                </p>
+              )}
+            </motion.div>
+          </div>
+        )}
 
         {/* Recommended Movies */}
         <FadeIn delay={0.5} direction="up">
@@ -200,13 +175,25 @@ export default function Home() {
           </h2>
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 p-4">
-          {recommendedMovies.map((movie, index) => (
-            <StaggerItem key={movie.id}>
-              <MovieCard movie={movie} index={index} />
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 p-4">
+            {recommendedMovies.length > 0 ? (
+              recommendedMovies.map((movie, index) => (
+                <StaggerItem key={movie.id}>
+                  <MovieCard movie={movie} index={index} />
+                </StaggerItem>
+              ))
+            ) : (
+              <p className="text-[#ab9cba] col-span-full text-center py-8">
+                No recommended movies available
+              </p>
+            )}
+          </StaggerContainer>
+        )}
       </div>
     </div>
   );

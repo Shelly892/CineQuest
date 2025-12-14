@@ -16,11 +16,23 @@ const apiClient = axios.create({
 
 // ==================== Request interceptor ====================
 apiClient.interceptors.request.use(
-  (config) => {
-    // 1. Attach the JWT access token when available
-    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    // 1. Attach the JWT access token from Keycloak
+    // Import keycloak dynamically to ensure it's initialized
+    const { default: keycloak } = await import("../config/keycloak");
+
+    if (keycloak && keycloak.authenticated && keycloak.token) {
+      // Update token if needed (Keycloak handles token refresh automatically)
+      try {
+        await keycloak.updateToken(30); // Refresh token if it expires within 30 seconds
+      } catch (error) {
+        console.error("[Token Update Failed]", error);
+        // If token update fails, user will be redirected to login by Keycloak
+      }
+
+      if (keycloak.token) {
+        config.headers.Authorization = `Bearer ${keycloak.token}`;
+      }
     }
 
     // 2. Log requests in development for easier debugging
@@ -63,32 +75,29 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Attempt to refresh the access token
-        const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+        // Attempt to update Keycloak token
+        const { default: keycloak } = await import("../config/keycloak");
 
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
+        if (keycloak && keycloak.authenticated) {
+          await keycloak.updateToken();
+          if (keycloak.token) {
+            originalRequest.headers.Authorization = `Bearer ${keycloak.token}`;
+            return apiClient(originalRequest);
+          }
         }
 
-        const { data } = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
-          refresh_token: refreshToken,
-        });
-
-        // Persist the new access token
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, data.access_token);
-
-        // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
-        return apiClient(originalRequest);
+        // If not authenticated or token update failed, redirect to login
+        if (keycloak) {
+          keycloak.login();
+        }
+        return Promise.reject(error);
       } catch (refreshError) {
-        // If refresh fails, clear auth state and redirect to login
+        // If refresh fails, redirect to login
         console.error("[Token Refresh Failed]", refreshError);
-        localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-        localStorage.removeItem(STORAGE_KEYS.USER);
-
-        // Redirect to the login page
-        window.location.href = "/login";
+        const { default: keycloak } = await import("../config/keycloak");
+        if (keycloak) {
+          keycloak.login();
+        }
         return Promise.reject(refreshError);
       }
     }
@@ -131,7 +140,6 @@ apiClient.interceptors.response.use(
 
 // ==================== Exports ====================
 export default apiClient;
-
 
 export const api = {
   get: (url, config) => apiClient.get(url, config),

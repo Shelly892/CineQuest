@@ -49,3 +49,5 @@ mvnw.cmd
 
 ### data volume ###
 data_volume
+
+.env

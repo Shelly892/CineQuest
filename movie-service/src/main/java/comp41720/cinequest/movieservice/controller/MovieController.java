@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/movies")
-@CrossOrigin(origins = "*")
 @Slf4j
 public class MovieController {
 

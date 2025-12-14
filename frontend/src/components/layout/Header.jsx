@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useKeycloak } from "@react-keycloak/web";
 
 export default function Header() {
+  const { keycloak } = useKeycloak();
+
+  const handleLogout = () => {
+    keycloak.logout();
+  };
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -38,22 +45,24 @@ export default function Header() {
 
         {/* Navigation Links */}
         <nav className="flex items-center gap-9">
-          {["Home", "Movies", "TV Shows", "My List"].map((item, index) => (
+          {[
+            { name: "Home", path: "/" },
+            { name: "Movies", path: "/movies" },
+            { name: "My Ratings", path: "/ratings" },
+            { name: "Sign In", path: "/sign-in" },
+            { name: "Achievements", path: "/achievements" },
+          ].map((item, index) => (
             <motion.div
-              key={item}
+              key={item.name}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.1, duration: 0.5 }}
             >
               <Link
-                to={
-                  item === "Home"
-                    ? "/"
-                    : `/${item.toLowerCase().replace(" ", "-")}`
-                }
+                to={item.path}
                 className="text-white text-sm font-medium leading-normal hover:text-[#8d25f4] transition-colors relative group"
               >
-                {item}
+                {item.name}
                 <motion.span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#8d25f4] group-hover:w-full transition-all duration-300" />
               </Link>
             </motion.div>
@@ -61,17 +70,43 @@ export default function Header() {
         </nav>
       </div>
 
-      {/* Right: Search + User */}
-      <div className="flex flex-1 justify-end gap-8 items-center">
-        {/* Search Bar */}
-        <motion.label
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex flex-col min-w-40 h-10 max-w-64"
-        >
-          <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
-            <div className="text-[#ab9cba] flex bg-[#302839] items-center justify-center pl-4 rounded-l-lg">
+      {/* Right: User Info + Logout */}
+      <div className="flex items-center gap-4">
+        {keycloak.authenticated && (
+          <>
+            {/* User Info */}
+            <div className="text-right">
+              <p className="text-white text-sm font-medium">
+                {keycloak.tokenParsed?.preferred_username || "User"}
+              </p>
+              <p className="text-[#ab9cba] text-xs">
+                {keycloak.tokenParsed?.email || ""}
+              </p>
+            </div>
+
+            {/* User Avatar */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="bg-gradient-to-br from-[#8d25f4] to-[#667eea] rounded-full w-10 h-10 flex items-center justify-center cursor-pointer ring-2 ring-transparent hover:ring-[#8d25f4] transition-all duration-300"
+            >
+              <span className="text-white font-bold text-lg">
+                {(keycloak.tokenParsed?.preferred_username ||
+                  "U")[0].toUpperCase()}
+              </span>
+            </motion.div>
+
+            {/* Logout Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              className="text-white hover:text-[#8d25f4] transition-colors"
+              title="Logout"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -79,29 +114,11 @@ export default function Header() {
                 fill="currentColor"
                 viewBox="0 0 256 256"
               >
-                <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" />
+                <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z" />
               </svg>
-            </div>
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              placeholder="Search"
-              className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-white focus:outline-0 focus:ring-0 border-none bg-[#302839] h-full placeholder:text-[#ab9cba] px-4 rounded-r-lg text-base font-normal leading-normal transition-all duration-300"
-            />
-          </div>
-        </motion.label>
-
-        {/* User Avatar */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 cursor-pointer ring-2 ring-transparent hover:ring-[#8d25f4] transition-all duration-300"
-          style={{
-            backgroundImage: `url("https://via.placeholder.com/40")`,
-          }}
-        />
+            </motion.button>
+          </>
+        )}
       </div>
     </motion.header>
   );

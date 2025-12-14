@@ -1,105 +1,88 @@
-import { useState } from "react";
+import { useKeycloak } from "@react-keycloak/web";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useLogin } from "../hooks/useAuth";
-import Button from "../components/common/Button";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { keycloak, initialized } = useKeycloak();
+  const navigate = useNavigate();
+  const handleLogin = useLogin();
 
-  const { mutate: login, isLoading } = useLogin();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    // Form validation
-    if (!username || !password) {
-      setError("Please enter your username and password.");
-      return;
+  useEffect(() => {
+    // If already authenticated, redirect to home
+    if (initialized && keycloak.authenticated) {
+      navigate("/");
     }
+  }, [initialized, keycloak.authenticated, navigate]);
 
-    // Trigger login mutation
-    login(
-      { username, password },
-      {
-        onError: (err) => {
-          setError(
-            err.response?.data?.message ||
-              "Login failed. Please check your username and password."
-          );
-        },
-      }
+  if (!initialized) {
+    return (
+      <div className="min-h-screen bg-[#141118] flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
+      </div>
     );
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md">
-        <div className="card">
+    <div className="min-h-screen flex items-center justify-center bg-[#141118]">
+      <div className="w-full max-w-md px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-[#211b27] rounded-lg p-8 shadow-2xl border border-[#473b54]"
+        >
+          {/* Logo */}
           <div className="text-center mb-8">
-            <div className="text-5xl mb-4">🎬</div>
-            <h2 className="text-3xl font-bold text-gray-900">Sign in</h2>
-            <p className="text-gray-600 mt-2">Welcome to CineQuest</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="input"
-                placeholder="Enter your username"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input"
-                placeholder="Enter your password"
-                disabled={isLoading}
-              />
-            </div>
-
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full"
-              loading={isLoading}
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              className="w-16 h-16 mx-auto mb-4 text-[#8d25f4]"
             >
-              Sign in
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center text-sm text-gray-600">
-            <p>Demo account: demo / password123</p>
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 6H42L36 24L42 42H6L12 24L6 6Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </motion.div>
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Welcome to CineQuest
+            </h2>
+            <p className="text-[#ab9cba]">Your ultimate movie companion</p>
           </div>
-        </div>
+
+          {/* Login Button - Redirects to Keycloak login page */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleLogin}
+            className="w-full bg-[#8d25f4] hover:bg-[#7a1fd4] text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center gap-3"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 256 256"
+            >
+              <path d="M141.66,133.66l-40,40a8,8,0,0,1-11.32-11.32L116.69,136H24a8,8,0,0,1,0-16h92.69L90.34,93.66a8,8,0,0,1,11.32-11.32l40,40A8,8,0,0,1,141.66,133.66ZM192,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h56a16,16,0,0,0,16-16V48A16,16,0,0,0,192,32Z" />
+            </svg>
+            <span>登录 / 注册</span>
+          </motion.button>
+
+          {/* Info */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-[#ab9cba]">
+              点击按钮跳转到 Keycloak 登录页面
+            </p>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
