@@ -238,7 +238,8 @@ services:
       SIGN_SERVICE_URL: http://sign-service:3004
       ACHIEVEMENT_SERVICE_URL: http://achievement-service:3005
       NOTIFICATION_SERVICE_URL: http://notification-service:3006
-      JWT_ISSUER_URL: http://keycloak:8080/keycloak/realms/cinequest
+      JWT_ISSUER_URL: http://localhost:8000/keycloak/realms/cinequest
+      JWT_SET_URL: http://keycloak:8080/keycloak/realms/cinequest/protocol/openid-connect/certs
 
 volumes:
   sign_postgres_data:
