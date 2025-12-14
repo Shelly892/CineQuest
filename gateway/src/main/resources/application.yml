@@ -17,7 +17,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_SERVICE_URL:http://localhost:3001}/keycloak/realms/cinequest
+          issuer-uri: ${JWT_ISSUER_URL:http://localhost:3001}/keycloak/realms/cinequest
 
 resilience4j:
   circuitbreaker:
