@@ -10,8 +10,8 @@ import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.function.*;
-
 import java.net.URI;
+import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.preserveHostHeader;
 
 /**
  * Gateway routes configuration using Spring Cloud Gateway Server MVC
@@ -77,6 +77,7 @@ public class Routes {
         return GatewayRouterFunctions.route("keycloak")
                 .route(RequestPredicates.path("/keycloak/**"),
                        HandlerFunctions.http(keycloakServiceUrl))
+                .before(preserveHostHeader())
                 .build();
     }
 
