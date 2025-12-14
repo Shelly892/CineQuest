@@ -23,6 +23,8 @@ public class UserIdHeaderFilter implements HandlerFilterFunction<ServerResponse,
 
     private static final Logger logger = LoggerFactory.getLogger(UserIdHeaderFilter.class);
     private static final String USER_ID_HEADER = "X-User-Id";
+    private static final String USER_EMAIL_HEADER = "X-User-Email";
+    private static final String USER_NAME_HEADER = "X-User-Name";
 
     @Override
     public ServerResponse filter(ServerRequest request, 
@@ -44,6 +46,8 @@ public class UserIdHeaderFilter implements HandlerFilterFunction<ServerResponse,
                     // Create modified request with X-User-Id header
                     ServerRequest modifiedRequest = ServerRequest.from(request)
                             .header(USER_ID_HEADER, userId)
+                            .header(USER_EMAIL_HEADER, jwt.getClaim("email").toString())
+                            .header(USER_NAME_HEADER, jwt.getClaim("given_name").toString()+" "+jwt.getClaim("family_name").toString())
                             .build();
 
                     logger.debug("Added {} header with value: {} to downstream service", USER_ID_HEADER, userId);
@@ -52,20 +56,8 @@ public class UserIdHeaderFilter implements HandlerFilterFunction<ServerResponse,
                     logger.warn("JWT token found but subject (userId) is empty");
                 }
             } else {
-                // Try alternative: get from request principal (fallback)
-                var principalOpt = request.principal();
-                if (principalOpt.isPresent() && principalOpt.get() instanceof JwtAuthenticationToken jwtToken) {
-                    String userId = jwtToken.getToken().getSubject();
-                    if (userId != null && !userId.isEmpty()) {
-                        logger.debug("Extracted user ID from request principal: {}", userId);
-                        ServerRequest modifiedRequest = ServerRequest.from(request)
-                                .header(USER_ID_HEADER, userId)
-                                .build();
-                        logger.debug("Added {} header with value: {} to downstream service (from principal)", 
-                                   USER_ID_HEADER, userId);
-                        return next.handle(modifiedRequest);
-                    }
-                }
+                logger.warn("No JWT authentication found");
+                throw new Exception("No JWT authentication found");
             }
         } catch (Exception e) {
             logger.error("Error extracting user ID from JWT: {}", e.getMessage(), e);

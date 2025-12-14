@@ -38,13 +38,13 @@ public class SecurityConfig {
                         // Achievement (Public) -> only contains GET
                         .requestMatchers("/api/achievement/**").permitAll()
 
-                        // Rating (only GET Public)
-                        .requestMatchers(HttpMethod.GET, "/api/rating/**").permitAll()
+                        // ratings (only GET Public)
+                        .requestMatchers(HttpMethod.GET, "/api/ratings/**").permitAll()
 
                         // === Authenticated ===
                         // Sign (All Authenticated)
-                        // Rating (POST/PUT/DELETE)
-                        .requestMatchers("/api/sign/**", "/api/rating/**").authenticated()
+                        // ratings (POST/PUT/DELETE)
+                        .requestMatchers("/api/sign/**", "/api/ratings/**").authenticated()
 
                         // === default ===
                         .anyRequest().authenticated()

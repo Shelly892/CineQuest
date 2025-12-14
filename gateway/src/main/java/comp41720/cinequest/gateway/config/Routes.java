@@ -47,6 +47,9 @@ public class Routes {
     @Value("${spring.gateway.services.notification}")
     private String notificationServiceUrl;
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri;
+
     private final UserIdHeaderFilter userIdHeaderFilter = new UserIdHeaderFilter();
 
     /**
@@ -61,6 +64,7 @@ public class Routes {
         logger.info("Sign Service: {}", signServiceUrl);
         logger.info("Achievement Service: {}", achievementServiceUrl);
         logger.info("Notification Service: {}", notificationServiceUrl);
+        logger.info("issuer-uri: {}", issuerUri);
         logger.info("===========================================");
         return "Service URLs logged";
     }
@@ -98,12 +102,12 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> ratingServiceRoute() {
         return GatewayRouterFunctions.route("rating_service")
+                .filter(userIdHeaderFilter) // Apply user ID header filter
                 .route(RequestPredicates.path("/api/rating/**")
                         .or(RequestPredicates.path("/api/ratings/**")), 
                        HandlerFunctions.http(ratingServiceUrl))
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("ratingServiceCircuitBreaker",
                         URI.create("forward:/fallback/rating")))
-                .filter(userIdHeaderFilter) // Apply user ID header filter
                 .build();
     }
 
@@ -114,11 +118,11 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> signServiceRoute() {
         return GatewayRouterFunctions.route("sign_service")
-                .route(RequestPredicates.path("/api/sign/**"), 
+                .filter(userIdHeaderFilter) // Apply user ID header filter
+                .route(RequestPredicates.path("/api/sign/**"),
                        HandlerFunctions.http(signServiceUrl))
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("signServiceCircuitBreaker",
                         URI.create("forward:/fallback/sign")))
-                .filter(userIdHeaderFilter) // Apply user ID header filter
                 .build();
     }
 
@@ -134,7 +138,6 @@ public class Routes {
                        HandlerFunctions.http(achievementServiceUrl))
                 .filter(CircuitBreakerFilterFunctions.circuitBreaker("achievementServiceCircuitBreaker",
                         URI.create("forward:/fallback/achievement")))
-                .filter(userIdHeaderFilter) // Apply user ID header filter
                 .build();
     }
 }
