@@ -53,6 +53,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>gateway</module>
         <module>rating-service</module>
         <module>sign-service</module>
         <module>achievement-service</module>
