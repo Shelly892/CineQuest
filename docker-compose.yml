@@ -178,18 +178,14 @@ services:
       KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
 #  movie-service:
-#    build:
-#      context: ./movie-service
-#      dockerfile: Dockerfile
-#    container_name: movie-service-cinequest
+#    image: zeli8888/movie-service
 #    ports:
 #      - "3002:3002"
 #    depends_on:
-#      - redis
+#      - movie-redis
 #    environment:
 #      TMDB_API_KEY: ${TMDB_API_KEY}
-#      REDIS_HOST: redis
-#      REDIS_PORT: 6379
+#      MOVIE_REDIS_HOST: movie-redis
 
   notification-service:
     image: zeli8888/cinequest-notification-service
