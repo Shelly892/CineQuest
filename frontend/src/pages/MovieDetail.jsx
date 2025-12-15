@@ -20,7 +20,6 @@ export default function MovieDetail() {
   // Page is public, but rating submission requires login
   const handleRatingSubmit = () => {
     if (!keycloak.authenticated) {
-      // Redirect to login if trying to submit rating without being logged in
       navigate("/login");
       return;
     }
@@ -33,6 +32,23 @@ export default function MovieDetail() {
         userId: keycloak.tokenParsed?.sub,
       });
     }
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    if (!amount) return "N/A";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Format number
+  const formatNumber = (num) => {
+    if (!num) return "N/A";
+    return new Intl.NumberFormat("en-US").format(num);
   };
 
   if (isLoading) {
@@ -69,7 +85,7 @@ export default function MovieDetail() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/movies")}
+                onClick={() => navigate(-1)}
                 className="mb-4 px-4 py-2 bg-[#211b27] text-white rounded-lg hover:bg-[#302839] transition-colors flex items-center gap-2"
               >
                 <svg
@@ -81,7 +97,7 @@ export default function MovieDetail() {
                 >
                   <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z" />
                 </svg>
-                Back to Movies
+                Back
               </motion.button>
             </FadeIn>
           </div>
@@ -89,7 +105,7 @@ export default function MovieDetail() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 md:px-40 py-10">
+      <div className="container mx-auto px-4 md:px-40 pt-10 pb-20">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Poster */}
           <FadeIn delay={0.2}>
@@ -112,33 +128,53 @@ export default function MovieDetail() {
           {/* Details */}
           <div className="flex-1">
             <FadeIn delay={0.3}>
-              <h1 className="text-white text-4xl font-bold mb-4">
+              <h1 className="text-white text-4xl font-bold mb-2">
                 {movie.title}
               </h1>
+              {movie.tagline && (
+                <p className="text-[#ab9cba] italic text-lg mb-4">
+                  "{movie.tagline}"
+                </p>
+              )}
             </FadeIn>
 
             <FadeIn delay={0.4}>
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 mb-6 flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className="text-yellow-400 text-2xl">★</span>
                   <span className="text-white text-xl font-bold">
                     {movie.vote_average?.toFixed(1)}
                   </span>
+                  <span className="text-[#ab9cba] text-sm">
+                    ({formatNumber(movie.vote_count)} votes)
+                  </span>
                 </div>
-                <span className="text-[#ab9cba]">
-                  {movie.release_date?.split("-")[0]}
-                </span>
-                <span className="text-[#ab9cba]">
-                  {movie.runtime ? `${movie.runtime} min` : ""}
-                </span>
+                {movie.release_date && (
+                  <span className="text-[#ab9cba]">
+                    {new Date(movie.release_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                )}
+                {movie.runtime && (
+                  <span className="text-[#ab9cba]">{movie.runtime} min</span>
+                )}
+                {movie.adult && (
+                  <span className="px-2 py-1 bg-red-500/20 border border-red-500 text-red-400 rounded text-sm font-bold">
+                    18+
+                  </span>
+                )}
               </div>
             </FadeIn>
 
+            {/* Overview */}
             <FadeIn delay={0.5}>
               <div className="mb-6">
                 <h2 className="text-white text-2xl font-bold mb-3">Overview</h2>
                 <p className="text-[#ab9cba] leading-relaxed">
-                  {movie.overview}
+                  {movie.overview || "No overview available."}
                 </p>
               </div>
             </FadeIn>
@@ -162,8 +198,68 @@ export default function MovieDetail() {
               </FadeIn>
             )}
 
-            {/* Rating Section */}
+            {/* Additional Info Grid */}
             <FadeIn delay={0.7}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* Budget & Revenue */}
+                {(movie.budget > 0 || movie.revenue > 0) && (
+                  <div className="bg-[#211b27] border border-[#473b54] rounded-lg p-4">
+                    <h3 className="text-white font-bold mb-2">Box Office</h3>
+                    {movie.budget > 0 && (
+                      <div className="flex justify-between mb-2">
+                        <span className="text-[#ab9cba] text-sm">Budget:</span>
+                        <span className="text-white text-sm font-medium">
+                          {formatCurrency(movie.budget)}
+                        </span>
+                      </div>
+                    )}
+                    {movie.revenue > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-[#ab9cba] text-sm">Revenue:</span>
+                        <span className="text-white text-sm font-medium">
+                          {formatCurrency(movie.revenue)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </FadeIn>
+
+            {/* Production Companies */}
+            {movie.production_companies &&
+              movie.production_companies.length > 0 && (
+                <FadeIn delay={0.8}>
+                  <div className="mb-6">
+                    <h2 className="text-white text-xl font-bold mb-3">
+                      Production Companies
+                    </h2>
+                    <div className="flex flex-wrap gap-4">
+                      {movie.production_companies.slice(0, 4).map((company) => (
+                        <div
+                          key={company.id}
+                          className="flex items-center gap-2 px-3 py-2 bg-[#211b27] border border-[#473b54] rounded-lg"
+                        >
+                          {company.logo_path ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w92${company.logo_path}`}
+                              alt={company.name}
+                              className="h-6 object-contain"
+                            />
+                          ) : (
+                            <span className="text-white text-sm">
+                              {company.name}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </FadeIn>
+              )}
+
+            {/* Rating Section */}
+            <FadeIn delay={0.9}>
               <div className="bg-[#211b27] border border-[#473b54] rounded-lg p-6 mt-8">
                 <h2 className="text-white text-2xl font-bold mb-4">
                   Rate this Movie
@@ -182,7 +278,7 @@ export default function MovieDetail() {
                     </p>
                   </div>
                 )}
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-4 flex-wrap">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
                     <motion.button
                       key={rating}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { usePopularMovies } from "../hooks/useMovies";
@@ -6,31 +6,85 @@ import FadeIn from "../components/common/FadeIn";
 import StaggerContainer, {
   StaggerItem,
 } from "../components/common/StaggerContainer";
-// ⭐ 修正：从 features 文件夹导入 MovieCard
 import MovieCard from "../features/MovieCard";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const scrollContainerRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   // Fetch popular movies from API
   const { data: moviesData, isLoading } = usePopularMovies(1);
 
-  // Get trending movies (first 5) and recommended movies (rest)
-  const trendingMovies = moviesData?.results?.slice(0, 5) || [];
-  const recommendedMovies = moviesData?.results?.slice(5, 17) || [];
+  // Get trending movies (first 6)
+  const trendingMovies = useMemo(
+    () => moviesData?.results?.slice(0, 6) || [],
+    [moviesData]
+  );
+
+  // Get latest releases (sorted by release_date, newest first)
+  const latestReleases = useMemo(() => {
+    if (!moviesData?.results) return [];
+
+    return [...moviesData.results]
+      .sort((a, b) => {
+        const dateA = a.release_date || "";
+        const dateB = b.release_date || "";
+        return dateB.localeCompare(dateA);
+      })
+      .slice(0, 12);
+  }, [moviesData]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // 使用 'q' 参数，与 Movies 页面保持一致
       navigate(`/movies?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
+  // Check scroll position
+  const checkScrollPosition = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  // Scroll functions
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -280,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 280,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkScrollPosition();
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", checkScrollPosition);
+      return () => container.removeEventListener("scroll", checkScrollPosition);
+    }
+  }, [trendingMovies]);
+
   return (
-    <div className="flex flex-1 justify-center py-5 px-4 md:px-40">
-      <div className="flex flex-col max-w-[960px] flex-1">
+    <div className="flex flex-1 justify-center py-5 px-4 md:px-40 bg-[#141118]">
+      <div className="flex flex-col max-w-[1200px] flex-1">
         {/* Hero Section */}
         <FadeIn delay={0.2}>
           <div className="mb-6">
@@ -62,7 +116,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="flex flex-col gap-2 text-left relative z-10"
+                className="flex flex-col gap-3 text-left relative z-10"
               >
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
@@ -70,16 +124,19 @@ export default function Home() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="text-white text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]"
                 >
-                  Explore the World of Cinema
+                  CineQuest: Your Movie Adventure Awaits
                 </motion.h1>
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
-                  className="text-white text-sm md:text-base font-normal leading-normal"
+                  className="text-white text-base md:text-lg font-medium leading-relaxed"
                 >
-                  Discover new releases, trending movies, and personalized
-                  recommendations. Your ultimate movie companion.
+                  Discover · Rate · Connect
+                  <span className="block text-[#ab9cba] text-sm md:text-base mt-1">
+                    Join the community shaping cinema's hottest trends with
+                    every click and vote.
+                  </span>
                 </motion.h2>
               </motion.div>
 
@@ -128,53 +185,151 @@ export default function Home() {
         </FadeIn>
 
         {/* Trending Movies */}
-        <FadeIn delay={0.3} direction="up">
-          <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-            Trending Movies
-          </h2>
-        </FadeIn>
+        <div className="mb-8">
+          <FadeIn delay={0.3} direction="up">
+            <div className="flex items-center justify-between mt-3">
+              <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4">
+                Trending Now
+              </h2>
+              <button
+                onClick={() => navigate("/movies")}
+                className="text-[#8d25f4] hover:text-[#7a1fd4] text-sm font-medium px-4 transition-colors"
+              >
+                View All →
+              </button>
+            </div>
+          </FadeIn>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto scrollbar-hide">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="flex items-stretch p-4 gap-3"
-            >
-              {trendingMovies.length > 0 ? (
-                trendingMovies.map((movie, index) => (
-                  <motion.div
-                    key={movie.id}
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: 0.5 + index * 0.1,
-                      duration: 0.5,
-                    }}
-                    className="flex-shrink-0 w-60"
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <>
+              {/* Desktop: Horizontal Scroll with External Arrows */}
+              <div className="hidden md:block relative">
+                <div className="flex items-center">
+                  {/* Left Arrow - Outside */}
+                  <div className="flex-shrink-0 w-12 flex justify-center">
+                    {canScrollLeft && (
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={scrollLeft}
+                        className="w-12 h-12 bg-[#211b27] border border-[#473b54] rounded-full flex items-center justify-center text-white hover:bg-[#302839] hover:border-[#8d25f4] transition-colors shadow-lg z-20"
+                        aria-label="Scroll left"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m15 18-6-6 6-6" />
+                        </svg>
+                      </motion.button>
+                    )}
+                  </div>
+
+                  {/* Scroll Container with padding for hover effect */}
+                  <div
+                    ref={scrollContainerRef}
+                    className="flex-1 overflow-x-auto scrollbar-hide scroll-smooth"
                   >
-                    <MovieCard movie={movie} index={index} />
-                  </motion.div>
-                ))
-              ) : (
-                <p className="text-[#ab9cba] px-4">
-                  No trending movies available
-                </p>
-              )}
-            </motion.div>
-          </div>
-        )}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.8 }}
+                      className="flex items-stretch px-4 gap-6 py-6"
+                    >
+                      {trendingMovies.length > 0 ? (
+                        trendingMovies.map((movie, index) => (
+                          <motion.div
+                            key={movie.id}
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              delay: 0.5 + index * 0.1,
+                              duration: 0.5,
+                            }}
+                            className="flex-shrink-0 w-[220px]"
+                          >
+                            <MovieCard movie={movie} index={index} />
+                          </motion.div>
+                        ))
+                      ) : (
+                        <p className="text-[#ab9cba] px-4">
+                          No trending movies available
+                        </p>
+                      )}
+                    </motion.div>
+                  </div>
 
-        {/* Recommended Movies */}
+                  {/* Right Arrow - Outside */}
+                  <div className="flex-shrink-0 w-12 flex justify-center">
+                    {canScrollRight && (
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={scrollRight}
+                        className="w-12 h-12 bg-[#211b27] border border-[#473b54] rounded-full flex items-center justify-center text-white hover:bg-[#302839] hover:border-[#8d25f4] transition-colors shadow-lg z-20"
+                        aria-label="Scroll right"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </motion.button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile: Grid Layout */}
+              <div className="md:hidden">
+                <StaggerContainer className="grid grid-cols-2 gap-4 px-4">
+                  {trendingMovies.slice(0, 4).map((movie, index) => (
+                    <StaggerItem key={movie.id}>
+                      <MovieCard movie={movie} index={index} />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Latest Releases */}
         <FadeIn delay={0.5} direction="up">
-          <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-            Recommended Movies
-          </h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4">
+              Latest Releases
+            </h2>
+            <button
+              onClick={() => navigate("/movies?sort=release_date.desc")}
+              className="text-[#8d25f4] hover:text-[#7a1fd4] text-sm font-medium px-4 transition-colors"
+            >
+              View All →
+            </button>
+          </div>
         </FadeIn>
 
         {isLoading ? (
@@ -182,16 +337,16 @@ export default function Home() {
             <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 p-4">
-            {recommendedMovies.length > 0 ? (
-              recommendedMovies.map((movie, index) => (
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4 pb-8">
+            {latestReleases.length > 0 ? (
+              latestReleases.map((movie, index) => (
                 <StaggerItem key={movie.id}>
                   <MovieCard movie={movie} index={index} />
                 </StaggerItem>
               ))
             ) : (
               <p className="text-[#ab9cba] col-span-full text-center py-8">
-                No recommended movies available
+                No latest releases available
               </p>
             )}
           </StaggerContainer>

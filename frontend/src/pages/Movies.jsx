@@ -13,6 +13,7 @@ import Loading from "../components/common/Loading";
 
 // Movie-specific components
 import SearchBar from "../components/movies/SearchBar";
+import SortBar from "../components/movies/SortBar";
 import Pagination from "../components/movies/Pagination";
 import EmptyState from "../components/movies/EmptyState";
 
@@ -28,6 +29,12 @@ export default function Movies() {
   const [page, setPage] = useState(
     parseInt(searchParams.get("page") || "1", 10)
   );
+  const [selectedSort, setSelectedSort] = useState(
+    searchParams.get("sort") || "popularity.desc"
+  );
+
+  // Sort expand state
+  const [isSortExpanded, setIsSortExpanded] = useState(false);
 
   // Debounce search query to reduce API calls
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -60,33 +67,57 @@ export default function Movies() {
   const error = isSearchMode ? searchError : popularError;
   const refetch = isSearchMode ? refetchSearch : refetchPopular;
 
+  // Sort movies (client-side sorting)
+  const sortedMovies = movies?.results
+    ? {
+        ...movies,
+        results: [...movies.results].sort((a, b) => {
+          switch (selectedSort) {
+            case "popularity.desc":
+              return (b.popularity || 0) - (a.popularity || 0);
+            case "popularity.asc":
+              return (a.popularity || 0) - (b.popularity || 0);
+            case "vote_average.desc":
+              return (b.vote_average || 0) - (a.vote_average || 0);
+            case "vote_average.asc":
+              return (a.vote_average || 0) - (b.vote_average || 0);
+            case "release_date.desc":
+              return (b.release_date || "").localeCompare(a.release_date || "");
+            case "release_date.asc":
+              return (a.release_date || "").localeCompare(b.release_date || "");
+            case "title.asc":
+              return (a.title || "").localeCompare(b.title || "");
+            case "title.desc":
+              return (b.title || "").localeCompare(a.title || "");
+            default:
+              return 0;
+          }
+        }),
+      }
+    : movies;
+
   // Sync state to URL parameters
   useEffect(() => {
     const params = {};
     if (debouncedSearchQuery) params.q = debouncedSearchQuery;
     if (page > 1) params.page = page.toString();
+    if (selectedSort !== "popularity.desc") params.sort = selectedSort;
     setSearchParams(params, { replace: true });
-  }, [debouncedSearchQuery, page, setSearchParams]);
+  }, [debouncedSearchQuery, page, selectedSort, setSearchParams]);
 
-  // Reset page when search query changes
+  // Reset page when search query or sort changes
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, selectedSort]);
 
-  // Save search history to localStorage (optional)
+  // Save search history to localStorage
   useEffect(() => {
-    if (
-      debouncedSearchQuery &&
-      movies?.results &&
-      movies.results.length > 0
-    ) {
-      const history = JSON.parse(
-        localStorage.getItem("searchHistory") || "[]"
-      );
+    if (debouncedSearchQuery && movies?.results && movies.results.length > 0) {
+      const history = JSON.parse(localStorage.getItem("searchHistory") || "[]");
       const updated = [
         debouncedSearchQuery,
         ...history.filter((q) => q !== debouncedSearchQuery),
-      ].slice(0, 10); // Keep last 10 searches
+      ].slice(0, 10);
       localStorage.setItem("searchHistory", JSON.stringify(updated));
     }
   }, [debouncedSearchQuery, movies]);
@@ -103,11 +134,22 @@ export default function Movies() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Debounce already handles the search trigger
+  };
+
+  const handleSortToggle = () => {
+    setIsSortExpanded(!isSortExpanded);
   };
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
+  };
+
+  const handleSortChange = (sort) => {
+    setSelectedSort(sort);
+  };
+
+  const handleSortReset = () => {
+    setSelectedSort("popularity.desc");
   };
 
   return (
@@ -119,32 +161,48 @@ export default function Movies() {
             <h1 className="text-white text-4xl font-bold mb-2">
               {isSearchMode
                 ? `Search Results${
-                    debouncedSearchQuery
-                      ? ` for "${debouncedSearchQuery}"`
-                      : ""
+                    debouncedSearchQuery ? ` for "${debouncedSearchQuery}"` : ""
                   }`
                 : "Popular Movies"}
             </h1>
-            {movies?.total_results > 0 && (
+            {sortedMovies?.results && sortedMovies.results.length > 0 && (
               <p className="text-[#ab9cba] text-sm">
-                Found {movies.total_results.toLocaleString()} movies
-                {movies.total_pages > 0 &&
-                  ` • Page ${page} of ${Math.min(movies.total_pages, 500)}`}
+                Showing {sortedMovies.results.length} movies
+                {sortedMovies.total_results > sortedMovies.results.length &&
+                  ` of ${sortedMovies.total_results.toLocaleString()} total`}
+                {sortedMovies.total_pages > 0 &&
+                  ` • Page ${page} of ${Math.min(
+                    sortedMovies.total_pages,
+                    500
+                  )}`}
               </p>
             )}
           </div>
         </FadeIn>
 
-        {/* ==================== Search Bar ==================== */}
+        {/* ==================== Search Bar with Sort Button ==================== */}
         <FadeIn delay={0.2}>
           <SearchBar
             value={searchQuery}
             onChange={handleSearchChange}
             onClear={handleSearchClear}
             onSubmit={handleSearchSubmit}
+            onSortToggle={handleSortToggle}
+            isSortExpanded={isSortExpanded}
+            currentSort={selectedSort}
             placeholder="Search for movies... (e.g., Avatar, Inception)"
           />
         </FadeIn>
+
+        {/* ==================== Sort Bar (appears below SearchBar) ==================== */}
+        {!isSearchMode && (
+          <SortBar
+            isExpanded={isSortExpanded}
+            selectedSort={selectedSort}
+            onSortChange={handleSortChange}
+            onReset={handleSortReset}
+          />
+        )}
 
         {/* ==================== Loading State ==================== */}
         {isLoading && (
@@ -154,21 +212,23 @@ export default function Movies() {
         )}
 
         {/* ==================== Error State ==================== */}
-        {!isLoading && isError && <ErrorMessage error={error} retry={refetch} />}
+        {!isLoading && isError && (
+          <ErrorMessage error={error} retry={refetch} />
+        )}
 
         {/* ==================== Empty State ==================== */}
-        {!isLoading && !isError && movies?.results?.length === 0 && (
+        {!isLoading && !isError && sortedMovies?.results?.length === 0 && (
           <EmptyState searchQuery={debouncedSearchQuery} />
         )}
 
         {/* ==================== Movies Grid ==================== */}
         {!isLoading &&
           !isError &&
-          movies?.results &&
-          movies.results.length > 0 && (
+          sortedMovies?.results &&
+          sortedMovies.results.length > 0 && (
             <>
               <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {movies.results.map((movie, index) => (
+                {sortedMovies.results.map((movie, index) => (
                   <StaggerItem key={movie.id}>
                     <MovieCard movie={movie} index={index} />
                   </StaggerItem>
@@ -178,7 +238,7 @@ export default function Movies() {
               {/* ==================== Pagination ==================== */}
               <Pagination
                 currentPage={page}
-                totalPages={Math.min(movies.total_pages || 1, 500)} // TMDB API max 500 pages
+                totalPages={Math.min(sortedMovies.total_pages || 1, 500)}
                 onPageChange={handlePageChange}
               />
             </>
