@@ -1,17 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCheckIn, useSignHistory } from "../hooks/useSign";
 import FadeIn from "../components/common/FadeIn";
+import ErrorModal from "../components/common/ErrorModal";
 
 export default function SignIn() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
 
   const userId = keycloak.tokenParsed?.sub;
-  const { data: signData, isLoading } = useSignHistory(userId);
+  const { data: signData, isLoading, error } = useSignHistory(userId);
   const { mutate: checkIn, isLoading: checkingIn } = useCheckIn();
+
+  // State for error modal
+  const [errorModal, setErrorModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    details: "",
+  });
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -24,12 +33,57 @@ export default function SignIn() {
     return null;
   }
 
+  // Helper function to check if error is circuit breaker
+  const isCircuitBreakerError = (error) => {
+    const responseData = error?.response?.data;
+    return (
+      error?.response?.status === 503 ||
+      responseData?.status === "SERVICE_UNAVAILABLE" ||
+      responseData?.error?.includes("Circuit breaker") ||
+      responseData?.error?.includes("circuit breaker")
+    );
+  };
+
   const handleCheckIn = () => {
-    checkIn({ userId });
+    checkIn(
+      { userId },
+      {
+        onError: (error) => {
+          if (isCircuitBreakerError(error)) {
+            const responseData = error?.response?.data || {};
+            setErrorModal({
+              isOpen: true,
+              title: "Service Temporarily Unavailable",
+              message:
+                responseData.message ||
+                "The sign-in service is temporarily unavailable. Please try again later.",
+              details:
+                responseData.error ||
+                "Circuit breaker is open or service timeout occurred",
+            });
+          } else {
+            // Handle other errors
+            setErrorModal({
+              isOpen: true,
+              title: "Check-in Failed",
+              message:
+                error?.response?.data?.message ||
+                error?.message ||
+                "Failed to check in. Please try again.",
+              details: error?.response?.data?.error || "",
+            });
+          }
+        },
+      }
+    );
   };
 
   const todayDate = new Date().toISOString().split("T")[0];
+  // Handle empty data gracefully - treat as new user with no sign history
   const hasSignedToday = signData?.todaySigned || false;
+  const consecutiveDays = signData?.consecutiveDays || 0;
+  const totalDays = signData?.totalDays || 0;
+  const signHistory = signData?.signHistory || [];
 
   return (
     <div className="min-h-screen bg-[#141118] py-10 px-4 md:px-40">
@@ -49,7 +103,23 @@ export default function SignIn() {
           </div>
         )}
 
-        {!isLoading && signData && (
+        {/* Error State */}
+        {error && !isLoading && (
+          <FadeIn delay={0.2}>
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">❌</div>
+              <p className="text-red-400 text-lg mb-6">
+                Failed to load sign-in data
+              </p>
+              <p className="text-[#ab9cba] text-sm mb-6">
+                {error.message || "Please try again later"}
+              </p>
+            </div>
+          </FadeIn>
+        )}
+
+        {/* Content - Show even if signData is empty (new user) */}
+        {!isLoading && !error && (
           <>
             {/* Check-in Card */}
             <FadeIn delay={0.2}>
@@ -88,16 +158,14 @@ export default function SignIn() {
                   <div className="text-4xl mb-2">🔥</div>
                   <p className="text-[#ab9cba] text-sm mb-1">Current Streak</p>
                   <p className="text-white text-4xl font-bold">
-                    {signData.consecutiveDays || 0}
+                    {consecutiveDays}
                   </p>
                   <p className="text-[#ab9cba] text-sm mt-1">days</p>
                 </div>
                 <div className="bg-[#211b27] border border-[#473b54] rounded-lg p-6 text-center">
                   <div className="text-4xl mb-2">📊</div>
                   <p className="text-[#ab9cba] text-sm mb-1">Total Check-ins</p>
-                  <p className="text-white text-4xl font-bold">
-                    {signData.totalDays || 0}
-                  </p>
+                  <p className="text-white text-4xl font-bold">{totalDays}</p>
                   <p className="text-[#ab9cba] text-sm mt-1">days</p>
                 </div>
               </div>
@@ -109,9 +177,9 @@ export default function SignIn() {
                 <h2 className="text-white text-2xl font-bold mb-4">
                   Recent Check-ins
                 </h2>
-                {signData.signHistory && signData.signHistory.length > 0 ? (
+                {signHistory.length > 0 ? (
                   <div className="space-y-2">
-                    {signData.signHistory.slice(0, 7).map((sign) => (
+                    {signHistory.slice(0, 7).map((sign) => (
                       <div
                         key={sign.id}
                         className="flex items-center justify-between py-3 px-4 bg-[#141118] rounded-lg"
@@ -177,6 +245,15 @@ export default function SignIn() {
           </>
         )}
       </div>
+
+      {/* Error Modal */}
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+        title={errorModal.title}
+        message={errorModal.message}
+        details={errorModal.details}
+      />
     </div>
   );
 }

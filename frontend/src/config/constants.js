@@ -51,14 +51,14 @@ export const API_PATHS = {
 
   // Sign-in
   SIGN: {
-    CHECK_IN: "/api/signs",
-    USER_HISTORY: (userId) => `/api/signs/user/${userId}`,
+    CHECK_IN: "/api/sign", // POST /api/sign
+    USER_HISTORY: (userId) => `/api/signs/user/${userId}`, // GET /api/signs/user/{userId}
   },
 
   // Achievements
   ACHIEVEMENTS: {
-    USER: (userId) => `/api/achievement/user/${userId}`,
-    ALL: "/api/achievement",
+    USER: (userId) => `/api/achievements/users/${userId}/badges`, // GET /api/achievements/users/{userId}/badges
+    ALL: "/api/achievement", // Keep existing if still used
   },
 };
 

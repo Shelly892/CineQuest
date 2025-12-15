@@ -5,6 +5,7 @@ import { API_PATHS } from "../config/constants";
 export const signApi = {
   /**
    * Check in for today
+   * Backend: POST /api/sign
    */
   checkIn: async (data) => {
     const response = await api.post(API_PATHS.SIGN.CHECK_IN, data);
@@ -13,9 +14,37 @@ export const signApi = {
 
   /**
    * Get user's sign-in history
+   * Backend: GET /api/signs/user/{userId}
    */
   getUserHistory: async (userId) => {
-    const { data } = await api.get(API_PATHS.SIGN.USER_HISTORY(userId));
-    return data;
+    try {
+      const response = await api.get(API_PATHS.SIGN.USER_HISTORY(userId), {
+        validateStatus: (status) => status === 200 || status === 404,
+      });
+
+      // If status is 404, return empty data structure
+      if (response.status === 404) {
+        return {
+          todaySigned: false,
+          consecutiveDays: 0,
+          totalDays: 0,
+          signHistory: [],
+        };
+      }
+
+      return response.data;
+    } catch (error) {
+      // Handle any other errors
+      if (error.response?.status === 404) {
+        // Return empty data structure when user has no sign history
+        return {
+          todaySigned: false,
+          consecutiveDays: 0,
+          totalDays: 0,
+          signHistory: [],
+        };
+      }
+      throw error;
+    }
   },
 };

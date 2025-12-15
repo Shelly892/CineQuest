@@ -8,6 +8,8 @@ export const useSignHistory = (userId) => {
     queryKey: queryKeys.sign.userHistory(userId),
     queryFn: () => signApi.getUserHistory(userId),
     enabled: !!userId,
+    retry: false, // Don't retry on 404
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -19,7 +21,9 @@ export const useCheckIn = () => {
     mutationFn: (data) => signApi.checkIn(data),
     onSuccess: (data, variables) => {
       // Invalidate sign history to refresh
-      queryClient.invalidateQueries(queryKeys.sign.userHistory(variables.userId));
+      queryClient.invalidateQueries(
+        queryKeys.sign.userHistory(variables.userId)
+      );
       console.log("[Check-in Success]", data);
     },
     onError: (error) => {
