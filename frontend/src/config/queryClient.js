@@ -33,8 +33,10 @@ export const queryKeys = {
   // Ratings
   ratings: {
     all: ["ratings"],
-    user: (userId) => ["ratings", "user", userId],
-    movie: (movieId) => ["ratings", "movie", movieId],
+    user: (userId, page = 0) => ["ratings", "user", userId, page],
+    movie: (movieId, page = 0) => ["ratings", "movie", movieId, page],
+    movieStats: (movieId) => ["ratings", "movie", movieId, "stats"],
+    userMovie: (userId, movieId) => ["ratings", "user", userId, "movie", movieId],
   },
 
   // Sign-in
