@@ -6,7 +6,8 @@ import FadeIn from "../components/common/FadeIn";
 import StaggerContainer, {
   StaggerItem,
 } from "../components/common/StaggerContainer";
-import MovieCard from "../components/features/MovieCard";
+// ⭐ 修正：从 features 文件夹导入 MovieCard
+import MovieCard from "../features/MovieCard";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,8 @@ export default function Home() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+      // 使用 'q' 参数，与 Movies 页面保持一致
+      navigate(`/movies?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 

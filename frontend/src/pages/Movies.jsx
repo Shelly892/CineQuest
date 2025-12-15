@@ -1,157 +1,188 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePopularMovies, useSearchMovies } from "../hooks/useMovies";
+import { useDebounce } from "../hooks/useDebounce";
+
+// Common components
 import FadeIn from "../components/common/FadeIn";
 import StaggerContainer, {
   StaggerItem,
 } from "../components/common/StaggerContainer";
-import { getImageUrl } from "../utils/imageUtils";
+import ErrorMessage from "../components/common/ErrorMessage";
+import Loading from "../components/common/Loading";
+
+// Movie-specific components
+import SearchBar from "../components/movies/SearchBar";
+import Pagination from "../components/movies/Pagination";
+import EmptyState from "../components/movies/EmptyState";
+
+// MovieCard from features folder
+import MovieCard from "../features/MovieCard";
 
 export default function Movies() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Fetch movies (public access, no login required)
-  const { data: popularMovies, isLoading: loadingPopular } =
-    usePopularMovies(page);
-  const { data: searchResults, isLoading: loadingSearch } = useSearchMovies(
-    searchQuery,
-    page
+  // Initialize state from URL parameters
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [page, setPage] = useState(
+    parseInt(searchParams.get("page") || "1", 10)
   );
 
-  const movies = searchQuery.length > 2 ? searchResults : popularMovies;
-  const isLoading = searchQuery.length > 2 ? loadingSearch : loadingPopular;
+  // Debounce search query to reduce API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  // Determine if we're in search mode
+  const isSearchMode = debouncedSearchQuery.length > 2;
+
+  // Fetch popular movies
+  const {
+    data: popularMovies,
+    isLoading: loadingPopular,
+    isError: errorPopular,
+    error: popularError,
+    refetch: refetchPopular,
+  } = usePopularMovies(page);
+
+  // Fetch search results
+  const {
+    data: searchResults,
+    isLoading: loadingSearch,
+    isError: errorSearch,
+    error: searchError,
+    refetch: refetchSearch,
+  } = useSearchMovies(debouncedSearchQuery, page);
+
+  // Select current data source based on mode
+  const movies = isSearchMode ? searchResults : popularMovies;
+  const isLoading = isSearchMode ? loadingSearch : loadingPopular;
+  const isError = isSearchMode ? errorSearch : errorPopular;
+  const error = isSearchMode ? searchError : popularError;
+  const refetch = isSearchMode ? refetchSearch : refetchPopular;
+
+  // Sync state to URL parameters
+  useEffect(() => {
+    const params = {};
+    if (debouncedSearchQuery) params.q = debouncedSearchQuery;
+    if (page > 1) params.page = page.toString();
+    setSearchParams(params, { replace: true });
+  }, [debouncedSearchQuery, page, setSearchParams]);
+
+  // Reset page when search query changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchQuery]);
+
+  // Save search history to localStorage (optional)
+  useEffect(() => {
+    if (
+      debouncedSearchQuery &&
+      movies?.results &&
+      movies.results.length > 0
+    ) {
+      const history = JSON.parse(
+        localStorage.getItem("searchHistory") || "[]"
+      );
+      const updated = [
+        debouncedSearchQuery,
+        ...history.filter((q) => q !== debouncedSearchQuery),
+      ].slice(0, 10); // Keep last 10 searches
+      localStorage.setItem("searchHistory", JSON.stringify(updated));
+    }
+  }, [debouncedSearchQuery, movies]);
+
+  // Event handlers
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+  };
+
+  const handleSearchClear = () => {
+    setSearchQuery("");
     setPage(1);
   };
 
-  const handleMovieClick = (movieId) => {
-    navigate(`/movies/${movieId}`);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // Debounce already handles the search trigger
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
   return (
-    <div className="flex flex-1 justify-center py-5 px-4 md:px-40 bg-[#141118]">
+    <div className="flex flex-1 justify-center py-5 px-4 md:px-40 bg-[#141118] min-h-screen">
       <div className="flex flex-col max-w-[1200px] flex-1">
-        {/* Header */}
+        {/* ==================== Header ==================== */}
         <FadeIn delay={0.1}>
-          <h1 className="text-white text-4xl font-bold mb-6">
-            {searchQuery ? "Search Results" : "Popular Movies"}
-          </h1>
+          <div className="mb-6">
+            <h1 className="text-white text-4xl font-bold mb-2">
+              {isSearchMode
+                ? `Search Results${
+                    debouncedSearchQuery
+                      ? ` for "${debouncedSearchQuery}"`
+                      : ""
+                  }`
+                : "Popular Movies"}
+            </h1>
+            {movies?.total_results > 0 && (
+              <p className="text-[#ab9cba] text-sm">
+                Found {movies.total_results.toLocaleString()} movies
+                {movies.total_pages > 0 &&
+                  ` • Page ${page} of ${Math.min(movies.total_pages, 500)}`}
+              </p>
+            )}
+          </div>
         </FadeIn>
 
-        {/* Search Bar */}
+        {/* ==================== Search Bar ==================== */}
         <FadeIn delay={0.2}>
-          <form onSubmit={handleSearch} className="mb-8">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for movies..."
-                className="flex-1 px-4 py-3 bg-[#211b27] border border-[#473b54] rounded-lg text-white placeholder:text-[#ab9cba] focus:outline-none focus:border-[#8d25f4] transition-colors"
-              />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="px-6 py-3 bg-[#8d25f4] text-white font-bold rounded-lg hover:bg-[#7a1fd4] transition-colors"
-              >
-                Search
-              </motion.button>
-            </div>
-          </form>
+          <SearchBar
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onClear={handleSearchClear}
+            onSubmit={handleSearchSubmit}
+            placeholder="Search for movies... (e.g., Avatar, Inception)"
+          />
         </FadeIn>
 
-        {/* Loading State */}
+        {/* ==================== Loading State ==================== */}
         {isLoading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="w-16 h-16 border-4 border-[#8d25f4] border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Loading
+            text={isSearchMode ? "Searching movies..." : "Loading movies..."}
+          />
         )}
 
-        {/* Movies Grid */}
-        {!isLoading && movies?.results && (
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {movies.results.map((movie) => (
-              <StaggerItem key={movie.id}>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -10 }}
-                  onClick={() => handleMovieClick(movie.id)}
-                  className="cursor-pointer"
-                >
-                  <div className="bg-[#211b27] rounded-lg overflow-hidden border border-[#473b54] hover:border-[#8d25f4] transition-colors">
-                    <img
-                      src={getImageUrl(
-                        movie.poster_path,
-                        "https://via.placeholder.com/240x360/473b54/ab9cba?text=No+Poster"
-                      )}
-                      alt={movie.title}
-                      className="w-full aspect-[2/3] object-cover"
-                      onError={(e) => {
-                        // Fallback if image fails to load
-                        e.target.src = "https://via.placeholder.com/240x360/473b54/ab9cba?text=No+Poster";
-                      }}
-                    />
-                    <div className="p-3">
-                      <h3 className="text-white font-bold text-sm mb-1 truncate">
-                        {movie.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-[#ab9cba]">
-                          {movie.release_date?.split("-")[0] || "N/A"}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-400">★</span>
-                          <span className="text-white">
-                            {movie.vote_average?.toFixed(1) || "N/A"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+        {/* ==================== Error State ==================== */}
+        {!isLoading && isError && <ErrorMessage error={error} retry={refetch} />}
+
+        {/* ==================== Empty State ==================== */}
+        {!isLoading && !isError && movies?.results?.length === 0 && (
+          <EmptyState searchQuery={debouncedSearchQuery} />
         )}
 
-        {/* Empty State */}
-        {!isLoading && movies?.results?.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-[#ab9cba] text-lg">No movies found</p>
-          </div>
-        )}
+        {/* ==================== Movies Grid ==================== */}
+        {!isLoading &&
+          !isError &&
+          movies?.results &&
+          movies.results.length > 0 && (
+            <>
+              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                {movies.results.map((movie, index) => (
+                  <StaggerItem key={movie.id}>
+                    <MovieCard movie={movie} index={index} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
 
-        {/* Pagination */}
-        {!isLoading && movies?.total_pages > 1 && (
-          <div className="flex justify-center gap-4 mt-8">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="px-4 py-2 bg-[#211b27] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#302839] transition-colors"
-            >
-              Previous
-            </motion.button>
-            <span className="px-4 py-2 bg-[#211b27] text-white rounded-lg">
-              Page {page} of {movies.total_pages}
-            </span>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={page === movies.total_pages}
-              onClick={() => setPage((p) => p + 1)}
-              className="px-4 py-2 bg-[#211b27] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#302839] transition-colors"
-            >
-              Next
-            </motion.button>
-          </div>
-        )}
+              {/* ==================== Pagination ==================== */}
+              <Pagination
+                currentPage={page}
+                totalPages={Math.min(movies.total_pages || 1, 500)} // TMDB API max 500 pages
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
       </div>
     </div>
   );
