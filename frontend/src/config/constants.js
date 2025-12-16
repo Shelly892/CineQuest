@@ -61,13 +61,3 @@ export const API_PATHS = {
   },
 };
 
-// ==================== Route Paths ====================
-// export const ROUTES = {
-//   HOME: "/",
-//   LOGIN: "/login",
-//   MOVIES: "/movies",
-//   MOVIE_DETAIL: (id) => `/movies/${id}`,
-//   RATINGS: "/ratings",
-//   SIGN_IN: "/sign-in",
-//   ACHIEVEMENTS: "/achievements",
-// };

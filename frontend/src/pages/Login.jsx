@@ -1,20 +1,26 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLogin } from "../hooks/useAuth";
 
 export default function Login() {
   const { keycloak, initialized } = useKeycloak();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const handleLogin = useLogin();
 
   useEffect(() => {
-    // If already authenticated, redirect to home
+    // If already authenticated, redirect to the 'from' path or home
     if (initialized && keycloak.authenticated) {
-      navigate("/");
+      const fromPath = searchParams.get("from");
+      if (fromPath) {
+        navigate(fromPath);
+      } else {
+        navigate("/");
+      }
     }
-  }, [initialized, keycloak.authenticated, navigate]);
+  }, [initialized, keycloak.authenticated, navigate, searchParams]);
 
   if (!initialized) {
     return (
@@ -73,14 +79,35 @@ export default function Login() {
             >
               <path d="M141.66,133.66l-40,40a8,8,0,0,1-11.32-11.32L116.69,136H24a8,8,0,0,1,0-16h92.69L90.34,93.66a8,8,0,0,1,11.32-11.32l40,40A8,8,0,0,1,141.66,133.66ZM192,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h56a16,16,0,0,0,16-16V48A16,16,0,0,0,192,32Z" />
             </svg>
-            <span>登录 / 注册</span>
+            <span>Login / Sign Up</span>
           </motion.button>
 
           {/* Info */}
           <div className="mt-6 text-center">
             <p className="text-sm text-[#ab9cba]">
-              点击按钮跳转到 Keycloak 登录页面
+              Click the button to redirect to Keycloak login page
             </p>
+          </div>
+
+          {/* Navigation Button */}
+          <div className="mt-6">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/")}
+              className="w-full bg-[#473b54] hover:bg-[#5a4764] text-white font-medium py-3 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 256 256"
+              >
+                <path d="M218.83,103.77l-80-75.48a1,1,0,0,0-1.66,0l-80,75.48A8,8,0,0,0,48,112H128v88a8,8,0,0,0,16,0V112h80a8,8,0,0,0,6.83-12.23Z" />
+              </svg>
+              <span>Home</span>
+            </motion.button>
           </div>
         </motion.div>
       </div>

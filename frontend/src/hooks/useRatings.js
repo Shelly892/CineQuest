@@ -51,6 +51,8 @@ export const useSubmitRating = () => {
     onSuccess: (data, variables) => {
       // Invalidate all ratings queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["ratings"] });
+      // Invalidate achievements to refresh badges
+      queryClient.invalidateQueries({ queryKey: ["achievements"] });
       console.log("[Rating Submitted]", data);
     },
     onError: (error) => {
@@ -68,6 +70,8 @@ export const useUpdateRating = () => {
     onSuccess: () => {
       // Invalidate all ratings queries
       queryClient.invalidateQueries({ queryKey: ["ratings"] });
+      // Invalidate achievements to refresh badges
+      queryClient.invalidateQueries({ queryKey: ["achievements"] });
       console.log("[Rating Updated]");
     },
     onError: (error) => {
@@ -85,6 +89,8 @@ export const useDeleteRating = () => {
     onSuccess: () => {
       // Invalidate all ratings queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["ratings"] });
+      // Invalidate achievements to refresh badges
+      queryClient.invalidateQueries({ queryKey: ["achievements"] });
       console.log("[Rating Deleted]");
     },
     onError: (error) => {

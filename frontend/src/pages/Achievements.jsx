@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useUserAchievements } from "../hooks/useAchievements";
 import FadeIn from "../components/common/FadeIn";
@@ -8,7 +8,6 @@ import StaggerContainer, {
   StaggerItem,
 } from "../components/common/StaggerContainer";
 
-// ✅ Badge 配置
 const LEVEL_COLORS = {
   Bronze: "from-[#CD7F32] to-[#A0522D]",
   Silver: "from-[#C0C0C0] to-[#A8A8A8]",
@@ -23,13 +22,11 @@ const LEVEL_ICONS = {
   Platinum: "💎",
 };
 
-// ✅ Badge 类型图标
 const TYPE_ICONS = {
   SIGN: "📅",
   RATING: "⭐",
 };
 
-// ✅ 所有可能的成就（用于显示未解锁）
 const ALL_ACHIEVEMENTS = {
   SIGN: [
     {
@@ -82,31 +79,26 @@ const ALL_ACHIEVEMENTS = {
 export default function Achievements() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userId = keycloak.tokenParsed?.sub;
   const { data: achievements, isLoading, error } = useUserAchievements(userId);
 
   useEffect(() => {
     if (!keycloak.authenticated) {
-      navigate("/login");
+      // Save current path and redirect to login
+      navigate(`/login?from=${encodeURIComponent(location.pathname)}`);
     }
-  }, [keycloak.authenticated, navigate]);
+  }, [keycloak.authenticated, navigate, location.pathname]);
 
   if (!keycloak.authenticated) {
     return null;
   }
 
-  // ✅ 分组 badges
   const unlockedBadges = achievements || [];
   const signBadges = unlockedBadges.filter((b) => b.badgeType === "SIGN");
   const ratingBadges = unlockedBadges.filter((b) => b.badgeType === "RATING");
 
-  // ✅ 检查是否已解锁
-  const isUnlocked = (badgeName) => {
-    return unlockedBadges.some((b) => b.badgeName === badgeName);
-  };
-
-  // ✅ Badge 卡片组件
   const BadgeCard = ({ badge, unlocked, type }) => (
     <motion.div
       whileHover={unlocked ? { scale: 1.05, y: -5 } : {}}
@@ -294,7 +286,6 @@ export default function Achievements() {
             {unlockedBadges.length === 0 && (
               <FadeIn delay={0.6}>
                 <div className="text-center py-12 bg-[#211b27] border border-[#473b54] rounded-lg">
-                  <div className="text-6xl mb-4">🚀</div>
                   <h3 className="text-white text-2xl font-bold mb-3">
                     Start Your Journey!
                   </h3>
@@ -326,14 +317,56 @@ export default function Achievements() {
             {/* Progress Hint */}
             {unlockedBadges.length > 0 && unlockedBadges.length < 7 && (
               <FadeIn delay={0.6}>
-                <div className="bg-gradient-to-r from-[#8d25f4] to-[#667eea] rounded-lg p-6 text-center">
-                  <h3 className="text-white text-xl font-bold mb-2">
-                    Keep Going!
-                  </h3>
-                  <p className="text-white/80">
-                    You're on your way to collecting all badges. Stay
-                    consistent!
-                  </p>
+                <div className="relative overflow-hidden bg-gradient-to-br from-[#1a1625] via-[#211b27] to-[#1a1625] rounded-xl p-8 border border-[#473b54] shadow-lg shadow-black/20">
+                  {/* Animated background pattern */}
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="absolute top-0 left-0 w-32 h-32 bg-[#8d25f4] rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#667eea] rounded-full blur-3xl"></div>
+                  </div>
+
+                  <div className="relative z-10">
+                    {/* Icon and Title */}
+                    <div className="flex items-center justify-center gap-3 mb-1">
+                      <h3 className="text-white text-2xl font-bold">
+                        Keep Going!
+                      </h3>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-white/90 text-sm font-medium">
+                          Progress
+                        </span>
+                        <span className="text-white/90 text-sm font-bold">
+                          {unlockedBadges.length} /{" "}
+                          {ALL_ACHIEVEMENTS.SIGN.length +
+                            ALL_ACHIEVEMENTS.RATING.length}
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{
+                            width: `${
+                              (unlockedBadges.length /
+                                (ALL_ACHIEVEMENTS.SIGN.length +
+                                  ALL_ACHIEVEMENTS.RATING.length)) *
+                              100
+                            }%`,
+                          }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                          className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 rounded-full shadow-lg shadow-yellow-400/50"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Encouragement Message */}
+                    <p className="text-white/90 text-base leading-relaxed text-center">
+                      You're on your way to collecting all badges! 🏆 Stay
+                      consistent and unlock more achievements.
+                    </p>
+                  </div>
                 </div>
               </FadeIn>
             )}

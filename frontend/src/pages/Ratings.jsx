@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../config/queryClient";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import ToastProvider from "../components/common/ToastProvider";
 import {
   useUserRatings,
   useDeleteRating,
@@ -73,6 +75,11 @@ function EditRatingModal({ rating, onClose, onSave }) {
   const handleSave = () => {
     onSave({ movieId: rating.movieId, rating: score, comment: comment.trim() });
   };
+
+  // Ensure document.body exists before creating portal
+  if (typeof document === "undefined" || !document.body) {
+    return null;
+  }
 
   return createPortal(
     <div
@@ -153,7 +160,8 @@ function EditRatingModal({ rating, onClose, onSave }) {
           </motion.button>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -164,6 +172,7 @@ export default function Ratings() {
   const userId = keycloak.tokenParsed?.sub;
 
   const [editingRating, setEditingRating] = useState(null);
+  const [deletingRating, setDeletingRating] = useState(null);
 
   const {
     data: ratingsResponse,
@@ -197,40 +206,46 @@ export default function Ratings() {
     return null;
   }
 
-  // ✅ Handle edit
   const handleEdit = (rating) => {
     setEditingRating(rating);
   };
 
-  // ✅ Handle save edit
   const handleSaveEdit = (ratingData) => {
     updateRating(ratingData, {
       onSuccess: () => {
         console.log("[Rating Updated Successfully]");
         setEditingRating(null);
-        queryClient.invalidateQueries({ 
-          queryKey: queryKeys.achievements.user(userId) 
-        });
+        toast.success("Rating updated successfully!");
+        // queryClient.invalidateQueries({
+        //   queryKey: queryKeys.achievements.user(userId),
+        // });
       },
       onError: (error) => {
         console.error("[Update Error]", error);
-        alert("Failed to update rating. Please try again.");
+        toast.error("Failed to update rating. Please try again.");
       },
     });
   };
 
   const handleDelete = (rating) => {
-    if (window.confirm("Are you sure you want to delete this rating?")) {
-      deleteRating(rating.movieId, {
+    setDeletingRating(rating);
+  };
+
+  const confirmDelete = () => {
+    if (deletingRating) {
+      deleteRating(deletingRating.movieId, {
         onSuccess: () => {
           console.log("[Rating Deleted Successfully]");
-          queryClient.invalidateQueries({ 
-            queryKey: queryKeys.achievements.user(userId) 
+          toast.success("Rating deleted successfully!");
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.achievements.user(userId),
           });
+          setDeletingRating(null);
         },
         onError: (error) => {
           console.error("[Delete Error]", error);
-          alert("Failed to delete rating. Please try again.");
+          toast.error("Failed to delete rating. Please try again.");
+          setDeletingRating(null);
         },
       });
     }
@@ -330,7 +345,7 @@ export default function Ratings() {
                       className="cursor-pointer hover:opacity-80 transition-opacity flex-1"
                       onClick={() => handleMovieClick(rating.movieId)}
                     >
-                      {/* ✅ Movie Card with Thumbnail & Title */}
+                      {/*  Movie Card with Thumbnail & Title */}
                       <MovieCard movieId={rating.movieId} rating={rating} />
 
                       {/* Comment */}
@@ -354,7 +369,7 @@ export default function Ratings() {
                         <span className="text-[#ab9cba]">/10.0</span>
                       </div>
 
-                      {/* ✅ Edit Button */}
+                      {/*  Edit Button */}
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -435,6 +450,57 @@ export default function Ratings() {
             onSave={handleSaveEdit}
           />
         )}
+
+        {/* Delete Confirmation Modal */}
+        {deletingRating &&
+          typeof document !== "undefined" &&
+          document.body &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+              style={{ zIndex: 9999 }}
+              onClick={() => setDeletingRating(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#211b27] border border-[#473b54] rounded-lg p-6 max-w-md w-full"
+              >
+                <h2 className="text-white text-2xl font-bold mb-4">
+                  Confirm Delete
+                </h2>
+                <p className="text-[#ab9cba] mb-6">
+                  Are you sure you want to delete this rating? This action
+                  cannot be undone.
+                </p>
+                <div className="flex gap-3">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={confirmDelete}
+                    disabled={isDeleting}
+                    className="flex-1 px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setDeletingRating(null)}
+                    disabled={isDeleting}
+                    className="flex-1 px-6 py-3 bg-[#473b54] text-white font-bold rounded-lg hover:bg-[#5a4764] transition-colors disabled:opacity-50"
+                  >
+                    Cancel
+                  </motion.button>
+                </div>
+              </motion.div>
+            </div>,
+            document.body
+          )}
+
+        {/* Toast Provider */}
+        <ToastProvider />
       </div>
     </div>
   );

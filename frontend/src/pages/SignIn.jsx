@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useKeycloak } from "@react-keycloak/web";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCheckIn } from "../hooks/useSign";
 import FadeIn from "../components/common/FadeIn";
@@ -12,7 +12,8 @@ import { queryKeys } from "../config/queryClient";
 export default function SignIn() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // ✅ 添加
+  const location = useLocation();
+  const queryClient = useQueryClient();
 
   const userId = keycloak.tokenParsed?.sub;
   const { mutate: checkIn, isLoading: checkingIn } = useCheckIn();
@@ -47,9 +48,10 @@ export default function SignIn() {
 
   useEffect(() => {
     if (!keycloak.authenticated) {
-      navigate("/login");
+      // Save current path and redirect to login
+      navigate(`/login?from=${encodeURIComponent(location.pathname)}`);
     }
-  }, [keycloak.authenticated, navigate]);
+  }, [keycloak.authenticated, navigate, location.pathname]);
 
   if (!keycloak.authenticated) {
     return null;
@@ -78,7 +80,7 @@ export default function SignIn() {
             );
           }
 
-          // ✅ 刷新 achievements
+          // Refresh achievements
           queryClient.invalidateQueries({
             queryKey: queryKeys.achievements.user(userId),
           });
