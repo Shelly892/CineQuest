@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../config/queryClient";
 import { motion } from "framer-motion";
 import {
   useUserRatings,
@@ -15,7 +17,6 @@ import StaggerContainer, {
 } from "../components/common/StaggerContainer";
 import { getImageUrl } from "../utils/imageUtils";
 
-// ✅ Mini movie card component with caching
 function MovieCard({ movieId, rating }) {
   const { data: movie, isLoading } = useMovieDetails(movieId);
 
@@ -159,6 +160,7 @@ function EditRatingModal({ rating, onClose, onSave }) {
 export default function Ratings() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const userId = keycloak.tokenParsed?.sub;
 
   const [editingRating, setEditingRating] = useState(null);
@@ -206,6 +208,9 @@ export default function Ratings() {
       onSuccess: () => {
         console.log("[Rating Updated Successfully]");
         setEditingRating(null);
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.achievements.user(userId) 
+        });
       },
       onError: (error) => {
         console.error("[Update Error]", error);
@@ -219,6 +224,9 @@ export default function Ratings() {
       deleteRating(rating.movieId, {
         onSuccess: () => {
           console.log("[Rating Deleted Successfully]");
+          queryClient.invalidateQueries({ 
+            queryKey: queryKeys.achievements.user(userId) 
+          });
         },
         onError: (error) => {
           console.error("[Delete Error]", error);

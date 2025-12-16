@@ -19,6 +19,7 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: "cinequest_access_token",
   REFRESH_TOKEN: "cinequest_refresh_token",
   USER: "cinequest_user",
+  SIGN_IN: (userId) => `cinequest_sign_in_${userId}`, // Store sign-in record per user
 };
 
 // API endpoints
@@ -52,23 +53,21 @@ export const API_PATHS = {
   // Sign-in
   SIGN: {
     CHECK_IN: "/api/sign", // POST /api/sign
-    USER_HISTORY: (userId) => `/api/signs/user/${userId}`, // GET /api/signs/user/{userId}
   },
 
   // Achievements
   ACHIEVEMENTS: {
     USER: (userId) => `/api/achievements/users/${userId}/badges`, // GET /api/achievements/users/{userId}/badges
-    ALL: "/api/achievement", // Keep existing if still used
   },
 };
 
 // ==================== Route Paths ====================
-export const ROUTES = {
-  HOME: "/",
-  LOGIN: "/login",
-  MOVIES: "/movies",
-  MOVIE_DETAIL: (id) => `/movies/${id}`,
-  RATINGS: "/ratings",
-  SIGN_IN: "/sign-in",
-  ACHIEVEMENTS: "/achievements",
-};
+// export const ROUTES = {
+//   HOME: "/",
+//   LOGIN: "/login",
+//   MOVIES: "/movies",
+//   MOVIE_DETAIL: (id) => `/movies/${id}`,
+//   RATINGS: "/ratings",
+//   SIGN_IN: "/sign-in",
+//   ACHIEVEMENTS: "/achievements",
+// };

@@ -36,13 +36,18 @@ export const queryKeys = {
     user: (userId, page = 0) => ["ratings", "user", userId, page],
     movie: (movieId, page = 0) => ["ratings", "movie", movieId, page],
     movieStats: (movieId) => ["ratings", "movie", movieId, "stats"],
-    userMovie: (userId, movieId) => ["ratings", "user", userId, "movie", movieId],
+    userMovie: (userId, movieId) => [
+      "ratings",
+      "user",
+      userId,
+      "movie",
+      movieId,
+    ],
   },
 
   // Sign-in
   sign: {
     all: ["sign"],
-    userHistory: (userId) => ["sign", "user", userId],
   },
 
   // Achievements

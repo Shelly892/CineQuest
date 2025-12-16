@@ -10,11 +10,3 @@ export const useUserAchievements = (userId) => {
     enabled: !!userId,
   });
 };
-
-// ==================== Get all achievements ====================
-export const useAllAchievements = () => {
-  return useQuery({
-    queryKey: queryKeys.achievements.all,
-    queryFn: () => achievementsApi.getAllAchievements(),
-  });
-};
