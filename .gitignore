@@ -51,3 +51,4 @@ mvnw.cmd
 data_volume
 
 .env
+.env.production

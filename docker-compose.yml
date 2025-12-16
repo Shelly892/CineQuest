@@ -1,5 +1,17 @@
 version: "3.8"
 services:
+
+  frontend:
+    image: shelly8922/cinequest-frontend:latest
+    container_name: cinequest-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+      - keycloak
+    restart: unless-stopped
+
+
   # Databases
   sign-postgres:
     image: postgres:17.6
