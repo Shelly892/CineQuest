@@ -196,10 +196,10 @@ services:
       - schema-registry
       - zookeeper
     environment:
-      MAIL_HOST: sandbox.smtp.mailtrap.io
-      MAIL_PORT: 2525
-      MAIL_USERNAME: 320507215fd1af
-      MAIL_PASSWORD: fe0f5ce461f8b0
+      MAILTRAP_HOST: sandbox.smtp.mailtrap.io
+      MAILTRAP_PORT: 2525
+      MAILTRAP_USERNAME: 320507215fd1af
+      MAILTRAP_PASSWORD: fe0f5ce461f8b0
       KAFKA_BOOTSTRAP_SERVERS: broker:29092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
