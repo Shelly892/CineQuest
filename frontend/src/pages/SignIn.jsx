@@ -3,22 +3,24 @@ import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCheckIn } from "../hooks/useSign";
+import { useAchievementUnlock } from "../hooks/useAchievementUnlock";
 import FadeIn from "../components/common/FadeIn";
 import ErrorModal from "../components/common/ErrorModal";
+import AchievementUnlockModal from "../components/common/AchievementUnlockModal";
 import { STORAGE_KEYS } from "../config/constants";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "../config/queryClient";
 
 export default function SignIn() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const location = useLocation();
-  const queryClient = useQueryClient();
 
   const userId = keycloak.tokenParsed?.sub;
   const { mutate: checkIn, isLoading: checkingIn } = useCheckIn();
+  const { newAchievements, markAsShown, refetchAchievements } =
+    useAchievementUnlock(userId, !!userId);
 
   const [signInResult, setSignInResult] = useState(null);
+  const [currentAchievement, setCurrentAchievement] = useState(null);
   const [errorModal, setErrorModal] = useState({
     isOpen: false,
     title: "",
@@ -53,6 +55,31 @@ export default function SignIn() {
     }
   }, [keycloak.authenticated, navigate, location.pathname]);
 
+  // Handle new achievement unlocks
+  useEffect(() => {
+    if (newAchievements.length > 0 && !currentAchievement) {
+      // Show the first new achievement
+      setCurrentAchievement(newAchievements[0]);
+    }
+  }, [newAchievements, currentAchievement]);
+
+  const handleAchievementClose = () => {
+    if (currentAchievement) {
+      // Mark this achievement as shown so it won't appear again
+      const achievementId =
+        currentAchievement.badgeName || currentAchievement.name;
+      markAsShown(achievementId);
+      setCurrentAchievement(null);
+
+      // If there are more achievements, show the next one after a short delay
+      if (newAchievements.length > 1) {
+        setTimeout(() => {
+          setCurrentAchievement(newAchievements[1]);
+        }, 500);
+      }
+    }
+  };
+
   if (!keycloak.authenticated) {
     return null;
   }
@@ -80,10 +107,8 @@ export default function SignIn() {
             );
           }
 
-          // Refresh achievements
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.achievements.user(userId),
-          });
+          // Refetch achievements to check for new unlocks
+          refetchAchievements();
         },
         onError: (error) => {
           if (isCircuitBreakerError(error)) {
@@ -211,6 +236,13 @@ export default function SignIn() {
         title={errorModal.title}
         message={errorModal.message}
         details={errorModal.details}
+      />
+
+      {/* Achievement Unlock Modal */}
+      <AchievementUnlockModal
+        achievement={currentAchievement}
+        isOpen={!!currentAchievement}
+        onClose={handleAchievementClose}
       />
     </div>
   );

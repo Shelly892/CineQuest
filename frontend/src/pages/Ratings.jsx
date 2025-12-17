@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "../config/queryClient";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import ToastProvider from "../components/common/ToastProvider";
@@ -168,7 +166,6 @@ function EditRatingModal({ rating, onClose, onSave }) {
 export default function Ratings() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const userId = keycloak.tokenParsed?.sub;
 
   const [editingRating, setEditingRating] = useState(null);
@@ -216,9 +213,6 @@ export default function Ratings() {
         console.log("[Rating Updated Successfully]");
         setEditingRating(null);
         toast.success("Rating updated successfully!");
-        // queryClient.invalidateQueries({
-        //   queryKey: queryKeys.achievements.user(userId),
-        // });
       },
       onError: (error) => {
         console.error("[Update Error]", error);
@@ -237,9 +231,6 @@ export default function Ratings() {
         onSuccess: () => {
           console.log("[Rating Deleted Successfully]");
           toast.success("Rating deleted successfully!");
-          queryClient.invalidateQueries({
-            queryKey: queryKeys.achievements.user(userId),
-          });
           setDeletingRating(null);
         },
         onError: (error) => {
