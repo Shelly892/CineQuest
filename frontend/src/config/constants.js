@@ -1,7 +1,7 @@
 // ==================== Environment Variables ====================
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 export const KEYCLOAK_URL =
-  import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8000/keycloak";
+  import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8080/keycloak";
 export const KEYCLOAK_REALM =
   import.meta.env.VITE_KEYCLOAK_REALM || "cinequest";
 export const KEYCLOAK_CLIENT_ID =

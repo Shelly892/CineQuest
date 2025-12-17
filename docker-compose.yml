@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   frontend:
     image: shelly8922/cinequest-frontend:latest
     container_name: cinequest-frontend
@@ -10,7 +9,6 @@ services:
       - gateway
       - keycloak
     restart: unless-stopped
-
 
   # Databases
   sign-postgres:
@@ -156,7 +154,7 @@ services:
       rating-mongodb:
         condition: service_healthy
     environment:
-      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/order-service?authSource=admin
+      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/rating-service?authSource=admin
       ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
 
   sign-service:
@@ -260,19 +258,19 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/postgres-inventory/db
+      device: ./data_volume/postgres-sign/db
   rating_mongodb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/mongodb-order/db
+      device: ./data_volume/mongodb-rating/db
   rating_mongodb_config:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/mongodb-order/configdb
+      device: ./data_volume/mongodb-rating/configdb
   achievement_mongodb_data:
     driver: local
     driver_opts:
