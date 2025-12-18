@@ -17,7 +17,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8000/keycloak/realms/cinequest}
+          # don't set issuer-uri, since frontend domain is not fixed during development
+          # still safe since only services inside cluster can access keycloak
+#          issuer-uri: ${JWT_ISSUER_URL:http://localhost:8000/keycloak/realms/cinequest}
           jwk-set-uri: ${JWT_SET_URL:http://localhost:3001/keycloak/realms/cinequest/protocol/openid-connect/certs}
 
 resilience4j:

@@ -211,8 +211,8 @@ services:
     environment:
       MAILTRAP_HOST: sandbox.smtp.mailtrap.io
       MAILTRAP_PORT: 2525
-      MAILTRAP_USERNAME: cadcd6f417175d
-      MAILTRAP_PASSWORD: d67d43fd5f818f
+      MAILTRAP_USERNAME: 320507215fd1af
+      MAILTRAP_PASSWORD: fe0f5ce461f8b0
       KAFKA_BOOTSTRAP_SERVERS: broker:29092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
