@@ -1,0 +1,95 @@
+# Keycloak
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: cinequest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:24.0.1
+          args:
+            - start-dev
+            - --import-realm
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KC_DB
+              value: "mysql"
+            - name: KC_DB_URL_HOST
+              value: "keycloak-mysql"
+            - name: KC_DB_URL_DATABASE
+              value: "keycloak"
+            - name: KC_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: mysql-user
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: mysql-password
+            - name: KEYCLOAK_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: admin-user
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: admin-password
+            - name: KC_HTTP_RELATIVE_PATH
+              value: "/keycloak"
+            - name: KC_PROXY
+              value: "edge"
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            - name: KC_HOSTNAME_STRICT_HTTPS
+              value: "false"
+            - name: KC_HTTP_ENABLED
+              value: "true"
+          volumeMounts:
+            - name: keycloak-realm-config
+              mountPath: /opt/keycloak/data/import
+          readinessProbe:
+            httpGet:
+              path: /keycloak/realms/master
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /keycloak/realms/master
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 30
+      volumes:
+        - name: keycloak-realm-config
+          configMap:
+            name: keycloak-realm-config
+            optional: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: cinequest
+spec:
+  type: NodePort
+  selector:
+    app: keycloak
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30001

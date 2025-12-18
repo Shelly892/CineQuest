@@ -1,0 +1,77 @@
+# Sign Service PostgreSQL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sign-postgres-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Rating MongoDB Data PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rating-mongodb-data-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Rating MongoDB Config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rating-mongodb-config-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Achievement MongoDB Data PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: achievement-mongodb-data-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Achievement MongoDB Config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: achievement-mongodb-config-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Keycloak MySQL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-mysql-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: cinequest
+data:
+  # Kafka
+  KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+
+  # Service URIs
+  KEYCLOAK_SERVICE_URL: "http://keycloak:8080"
+  MOVIE_SERVICE_URL: "http://movie-service:3002"
+  RATING_SERVICE_URL: "http://rating-service:3003"
+  SIGN_SERVICE_URL: "http://sign-service:3004"
+  ACHIEVEMENT_SERVICE_URL: "http://achievement-service:3005"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:3006"
+  JWT_SET_URL: "http://keycloak:8080/keycloak/realms/cinequest/protocol/openid-connect/certs"
+
+  # gRPC
+  ACHIEVEMENT_GRPC_URI: "static://achievement-service:50051"
+
+  # Database connections
+  SIGN_POSTGRES_URI: "jdbc:postgresql://sign-postgres:5432/sign"
+  RATING_MONGODB_URI: "mongodb://root:password@rating-mongodb:27017/rating-service?authSource=admin"
+  ACHIEVEMENT_MONGODB_URI: "mongodb://root:password@achievement-mongodb:27017/achievement-service?authSource=admin"
+
+  # Redis
+  MOVIE_REDIS_HOST: "movie-redis"
+
+  # Mailtrap
+  MAILTRAP_HOST: "sandbox.smtp.mailtrap.io"
+  MAILTRAP_PORT: "2525"
+
+  # Gateway URL for frontend
+  GATEWAY_URL: "http://gateway:8000"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+  namespace: cinequest
+data:
+  KAFKA_BROKER_ID: "1"
+  KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://broker:29092,PLAINTEXT_HOST://broker:9092"
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+  ZOOKEEPER_CLIENT_PORT: "2181"
+  ZOOKEEPER_TICK_TIME: "2000"
+  SCHEMA_REGISTRY_HOST_NAME: "schema-registry"
+  SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+  SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "broker:29092"

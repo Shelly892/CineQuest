@@ -1,10 +1,42 @@
+# CineQuest
+## To Start
+#### (Optional) Configure your Mailtrap to receive emails from Notification service
+- register at https://mailtrap.io/
+- create a new sandbox project
+- replace mailtrap username and password at [k8s/secrets.yaml](k8s/secrets.yaml) with yours encoded with base64
+    ```bash
+    # to encode with base64
+    echo -n "your_username_or_password" | base64
+    ```
+- if you don't do this, emails will be sent to test inbox of my sandbox project
+#### Run Cluster
+**Run k8s and deploy all services(needs to pull images, may take a while)**
+```bash
+kubectl apply -f k8s/namespace.yaml && kubectl apply -f k8s/
+```
+**Wait for a while, until all services are ready**
+```bash
+kubectl get pod -n cinequest
+```
+**Start API gateway proxy and send requests using Postman(or any other tools)**
+```bash
+kubectl port-forward service/frontend -n cinequest 8080:80
+```
+**Open http://localhost:8080 in your browser and try our amazing movie website~**
+#### CleanUp
+```bash
+kubectl delete -f k8s/
+```
+## Demo
+
+
 ## Architecture Overview
 ```mermaid
 flowchart TD
     %% Client Layer
     A[Client Layer
     • React Web App
-    <i><u>Shuangning Wei, Fan Ke</u></i>]
+    <i><u>Shuangning Wei</u></i>]
     
     %% API Gateway
     B[API Gateway Port: 8000</br>• Authentication & Authorization
@@ -79,7 +111,7 @@ docker compose -p cinequest down
 ```bash
 $ export DOCKER_ACCOUNT=YOUR_DOCKER_ACCOUNT && export DOCKER_PASSWORD=YOUR_DOCKER_PASSWORD && mvn spring-boot:build-image -DskipTests
 ```
-
+---
 
 # CineQuest API Gateway
 
