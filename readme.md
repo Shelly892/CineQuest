@@ -14,20 +14,30 @@
 ```bash
 kubectl apply -f k8s/namespace.yaml && kubectl apply -f k8s/
 ```
-**Wait for a while, until all services are ready**
+**Wait for a while (6 minutes are suggested), until all services are ready**
 ```bash
-kubectl get pod -n cinequest
+kubectl get pod -n cinequest -w
 ```
-**Start API gateway proxy and send requests using Postman(or any other tools)**
+**Start frontend proxy**
 ```bash
 kubectl port-forward service/frontend -n cinequest 3000:80
 ```
-**Open http://localhost:8080 in your browser and try our amazing movie website~**
+**Open http://localhost:3000 in your browser and try our amazing movie website🎉**
 #### CleanUp
 ```bash
 kubectl delete -f k8s/
 ```
 ## Demo
+![alt text](demo/demo1.png)
+![alt text](demo/demo2.png)
+![alt text](demo/demo3.png)
+![alt text](demo/demo4.png)
+![alt text](demo/demo5.png)
+![alt text](demo/demo6.png)
+![alt text](demo/demo7.png)
+![alt text](demo/demo8.png)
+![alt text](demo/demo9.png)
+![alt text](demo/demo10.png)
 
 
 ## Architecture Overview
@@ -39,9 +49,9 @@ flowchart TD
     <i><u>Shuangning Wei</u></i>]
     
     %% API Gateway
-    B[API Gateway Port: 8000</br>• Authentication & Authorization
+    B[API Gateway Port: 8000</br>• Authentication
     • Circuit Breaker & Retry & Timeout
-    • Request Routing & API Composition
+    • Request Routing
     <i><u>Fan Ke</u></i>]
     
     %% Microservices
