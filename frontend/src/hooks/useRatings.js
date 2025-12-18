@@ -86,9 +86,24 @@ export const useDeleteRating = () => {
 
   return useMutation({
     mutationFn: (movieId) => ratingsApi.deleteRating(movieId),
-    onSuccess: () => {
+    onSuccess: (data, movieId) => {
       // Invalidate all ratings queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["ratings"] });
+      // Specifically remove user-movie rating queries for this movie
+      // This ensures MovieDetail page will refetch and get null/undefined
+      // Query key structure: ["ratings", "user", userId, "movie", movieId]
+      queryClient.removeQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            key[0] === "ratings" &&
+            key[1] === "user" &&
+            key[3] === "movie" &&
+            key[4] === movieId
+          );
+        },
+      });
       // Invalidate achievements to refresh badges
       queryClient.invalidateQueries({ queryKey: ["achievements"] });
       console.log("[Rating Deleted]");

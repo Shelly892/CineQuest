@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sign-service
+  namespace: cinequest
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sign-service
+  template:
+    metadata:
+      labels:
+        app: sign-service
+    spec:
+      containers:
+        - name: sign-service
+          image: zeli8888/cinequest-sign-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3004
+          env:
+            - name: SIGN_POSTGRES_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: cinequest-config
+                  key: SIGN_POSTGRES_URI
+            - name: SIGN_POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: cinequest-config
+                  key: SIGN_POSTGRES_USER
+            - name: SIGN_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cinequest-secrets
+                  key: SIGN_POSTGRES_PASSWORD
+            - name: ACHIEVEMENT_GRPC_URI
+              value: "static://achievement-service:50051"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sign-service
+  namespace: cinequest
+spec:
+  selector:
+    app: sign-service
+  ports:
+    - port: 3004
+      targetPort: 3004
+  type: ClusterIP

@@ -1,0 +1,141 @@
+# Rating MongoDB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rating-mongodb-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rating-mongodb
+  namespace: cinequest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rating-mongodb
+  template:
+    metadata:
+      labels:
+        app: rating-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7.0.5
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cinequest-secrets
+                  key: MONGO_ROOT_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              value: "rating-service"
+          volumeMounts:
+            - name: mongodb-storage
+              mountPath: /data/db
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: rating-mongodb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rating-mongodb
+  namespace: cinequest
+spec:
+  selector:
+    app: rating-mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP
+---
+# Achievement MongoDB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: achievement-mongodb-pvc
+  namespace: cinequest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: achievement-mongodb
+  namespace: cinequest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: achievement-mongodb
+  template:
+    metadata:
+      labels:
+        app: achievement-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7.0.5
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cinequest-secrets
+                  key: MONGO_ROOT_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              value: "achievement-service"
+          volumeMounts:
+            - name: mongodb-storage
+              mountPath: /data/db
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: achievement-mongodb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: achievement-mongodb
+  namespace: cinequest
+spec:
+  selector:
+    app: achievement-mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP

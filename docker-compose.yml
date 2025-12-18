@@ -152,7 +152,7 @@ services:
       rating-mongodb:
         condition: service_healthy
     environment:
-      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/order-service?authSource=admin
+      RATING_MONGODB_URI: mongodb://root:password@rating-mongodb:27017/rating-service?authSource=admin
       ACHIEVEMENT_GRPC_URI: static://achievement-service:50051
 
   sign-service:
@@ -247,6 +247,7 @@ services:
       SIGN_SERVICE_URL: http://sign-service:3004
       ACHIEVEMENT_SERVICE_URL: http://achievement-service:3005
       NOTIFICATION_SERVICE_URL: http://notification-service:3006
+      JWT_ISSUER_URL: http://localhost:8000/keycloak/realms/cinequest
       JWT_SET_URL: http://keycloak:8080/keycloak/realms/cinequest/protocol/openid-connect/certs
 
 volumes:
@@ -255,19 +256,19 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/postgres-inventory/db
+      device: ./data_volume/postgres-sign/db
   rating_mongodb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/mongodb-order/db
+      device: ./data_volume/mongodb-rating/db
   rating_mongodb_config:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data_volume/mongodb-order/configdb
+      device: ./data_volume/mongodb-rating/configdb
   achievement_mongodb_data:
     driver: local
     driver_opts:

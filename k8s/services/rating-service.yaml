@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rating-service
+  namespace: cinequest
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rating-service
+  template:
+    metadata:
+      labels:
+        app: rating-service
+    spec:
+      containers:
+        - name: rating-service
+          image: zeli8888/cinequest-rating-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3003
+          env:
+            - name: RATING_MONGODB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: cinequest-config
+                  key: RATING_MONGODB_URI
+            - name: ACHIEVEMENT_GRPC_URI
+              value: "static://achievement-service:50051"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rating-service
+  namespace: cinequest
+spec:
+  selector:
+    app: rating-service
+  ports:
+    - port: 3003
+      targetPort: 3003
+  type: ClusterIP

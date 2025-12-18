@@ -12,8 +12,10 @@ import {
   useMovieRatings,
   useMovieRatingStats,
 } from "../hooks/useRatings";
+import { useAchievementUnlock } from "../hooks/useAchievementUnlock";
 import FadeIn from "../components/common/FadeIn";
 import ToastProvider from "../components/common/ToastProvider";
+import AchievementUnlockModal from "../components/common/AchievementUnlockModal";
 import { useState, useEffect } from "react";
 import { getImageUrl } from "../utils/imageUtils";
 
@@ -40,6 +42,10 @@ export default function MovieDetail() {
   const { mutate: submitRating, isLoading: submitting } = useSubmitRating();
   const { mutate: updateRating, isLoading: updating } = useUpdateRating();
   const { mutate: deleteRating, isLoading: deleting } = useDeleteRating();
+  const { newAchievements, markAsShown, refetchAchievements } =
+    useAchievementUnlock(userId, !!userId);
+
+  const [currentAchievement, setCurrentAchievement] = useState(null);
 
   const movieRatings =
     movieRatingsResponse?.content || movieRatingsResponse || [];
@@ -50,9 +56,36 @@ export default function MovieDetail() {
       setComment(existingRating.comment || "");
       setIsEditing(false);
     } else {
+      // Clear form state when rating is deleted or doesn't exist
+      setSelectedRating(0);
+      setComment("");
       setIsEditing(true);
     }
-  }, [existingRating]);
+  }, [existingRating, id]);
+
+  // Handle new achievement unlocks
+  useEffect(() => {
+    if (newAchievements.length > 0 && !currentAchievement) {
+      // Show the first new achievement
+      setCurrentAchievement(newAchievements[0]);
+    }
+  }, [newAchievements, currentAchievement]);
+
+  const handleAchievementClose = () => {
+    if (currentAchievement) {
+      // Mark this achievement as shown so it won't appear again
+      const achievementId = currentAchievement.badgeName || currentAchievement.name;
+      markAsShown(achievementId);
+      setCurrentAchievement(null);
+      
+      // If there are more achievements, show the next one after a short delay
+      if (newAchievements.length > 1) {
+        setTimeout(() => {
+          setCurrentAchievement(newAchievements[1]);
+        }, 500);
+      }
+    }
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -110,6 +143,8 @@ export default function MovieDetail() {
         onSuccess: () => {
           toast.success("Rating updated successfully!");
           setIsEditing(false);
+          // Refetch achievements to check for new unlocks
+          refetchAchievements();
         },
         onError: (error) => {
           console.error("[Update Error]", error);
@@ -121,6 +156,8 @@ export default function MovieDetail() {
         onSuccess: () => {
           toast.success("Rating submitted successfully!");
           setIsEditing(false);
+          // Refetch achievements to check for new unlocks
+          refetchAchievements();
         },
         onError: (error) => {
           console.error("[Submit Error]", error);
@@ -616,6 +653,13 @@ export default function MovieDetail() {
 
       {/* Toast Provider */}
       <ToastProvider />
+
+      {/* Achievement Unlock Modal */}
+      <AchievementUnlockModal
+        achievement={currentAchievement}
+        isOpen={!!currentAchievement}
+        onClose={handleAchievementClose}
+      />
     </div>
   );
 }
