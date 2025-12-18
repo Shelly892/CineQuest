@@ -113,9 +113,9 @@ $ export DOCKER_ACCOUNT=YOUR_DOCKER_ACCOUNT && export DOCKER_PASSWORD=YOUR_DOCKE
 ```
 ---
 
-# CineQuest API Gateway
+# (Optional) CineQuest API Gateway
 
-This document outlines the available API endpoints for the CineQuest application, accessible through the API Gateway. All requests from the frontend should be directed to the gateway.
+This document summarizes the available API endpoints **for frontend's reference**, accessible through the API Gateway. All requests from the frontend should be directed to the gateway.
 
 ## Base URL
 
