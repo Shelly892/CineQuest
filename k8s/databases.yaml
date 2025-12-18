@@ -242,9 +242,16 @@ spec:
       labels:
         app: keycloak-mysql
     spec:
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 999:999 /var/lib/mysql && chmod -R 700 /var/lib/mysql"]
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
         - name: keycloak-mysql
-          image: mysql:8.0
+          image: mysql:8.3.0
           ports:
             - containerPort: 3306
           env:
