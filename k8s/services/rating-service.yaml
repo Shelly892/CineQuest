@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: rating-service
-          image: zeli8888/cinequest-rating-service:latest
+          image: zeli8888/cinequest-rating-service
           imagePullPolicy: Always
           ports:
             - containerPort: 3003

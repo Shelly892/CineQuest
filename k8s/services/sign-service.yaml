@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: sign-service
-          image: zeli8888/cinequest-sign-service:latest
+          image: zeli8888/cinequest-sign-service
           imagePullPolicy: Always
           ports:
             - containerPort: 3004
