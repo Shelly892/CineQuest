@@ -1,11 +1,8 @@
 // ==================== Environment Variables ====================
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
-export const KEYCLOAK_URL =
-  import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8000/keycloak";
-export const KEYCLOAK_REALM =
-  import.meta.env.VITE_KEYCLOAK_REALM || "cinequest";
-export const KEYCLOAK_CLIENT_ID =
-  import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "cinequest-frontend-client";
+export const API_BASE_URL = "";
+export const KEYCLOAK_URL = "/keycloak";
+export const KEYCLOAK_REALM = "cinequest";
+export const KEYCLOAK_CLIENT_ID = "cinequest-frontend-client";
 
 // Mock data mode is disabled - always use real API
 // export const USE_MOCK_DATA = false;

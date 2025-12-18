@@ -2,15 +2,11 @@ version: "3.8"
 services:
 
   frontend:
-    image: shelly8922/cinequest-frontend:latest
-    container_name: cinequest-frontend
+    image: zeli8888/cinequest-frontend
     ports:
       - "3000:80"
-    depends_on:
-      - gateway
-      - keycloak
-    restart: unless-stopped
-
+    environment:
+      GATEWAY_URL: http://gateway:8000
 
   # Databases
   sign-postgres:
