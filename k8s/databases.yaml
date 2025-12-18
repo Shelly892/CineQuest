@@ -242,13 +242,6 @@ spec:
       labels:
         app: keycloak-mysql
     spec:
-      initContainers:
-        - name: fix-permissions
-          image: busybox
-          command: ["sh", "-c", "chown -R 999:999 /var/lib/mysql && chmod -R 700 /var/lib/mysql"]
-          volumeMounts:
-            - name: mysql-storage
-              mountPath: /var/lib/mysql
       containers:
         - name: keycloak-mysql
           image: mysql:8.3.0
@@ -278,26 +271,18 @@ spec:
           livenessProbe:
             exec:
               command:
-                - mysqladmin
-                - ping
-                - -h
-                - localhost
-                - -u
-                - root
-                - -proot
-            initialDelaySeconds: 30
+                - /bin/sh
+                - -c
+                - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             exec:
               command:
-                - mysqladmin
-                - ping
-                - -h
-                - localhost
-                - -u
-                - root
-                - -proot
-            initialDelaySeconds: 5
+                - /bin/sh
+                - -c
+                - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 10
             periodSeconds: 5
       volumes:
         - name: mysql-storage
