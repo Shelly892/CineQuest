@@ -46,3 +46,4 @@ resilience4j:
 
 server:
   port: 8000
+  forward-headers-strategy: framework
