@@ -47,9 +47,6 @@ public class Routes {
     @Value("${spring.gateway.services.notification}")
     private String notificationServiceUrl;
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
-
     private final UserIdHeaderFilter userIdHeaderFilter = new UserIdHeaderFilter();
 
     /**
@@ -64,7 +61,6 @@ public class Routes {
         logger.info("Sign Service: {}", signServiceUrl);
         logger.info("Achievement Service: {}", achievementServiceUrl);
         logger.info("Notification Service: {}", notificationServiceUrl);
-        logger.info("issuer-uri: {}", issuerUri);
         logger.info("===========================================");
         return "Service URLs logged";
     }
