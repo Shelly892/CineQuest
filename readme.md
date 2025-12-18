@@ -38,6 +38,7 @@ kubectl delete -f k8s/
 ![alt text](demo/demo8.png)
 ![alt text](demo/demo9.png)
 ![alt text](demo/demo10.png)
+![alt text](demo/demo11.png)
 
 
 ## Architecture Overview
