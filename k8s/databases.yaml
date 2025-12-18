@@ -43,7 +43,7 @@ spec:
                 - postgres
                 - -d
                 - sign
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -118,7 +118,7 @@ spec:
                 - --eval
                 - "db.adminCommand('ping')"
                 - --quiet
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -195,7 +195,7 @@ spec:
                 - --eval
                 - "db.adminCommand('ping')"
                 - --quiet
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -274,7 +274,7 @@ spec:
                 - /bin/sh
                 - -c
                 - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
-            initialDelaySeconds: 60
+            initialDelaySeconds: 150
             periodSeconds: 10
           readinessProbe:
             exec:

@@ -20,7 +20,7 @@ kubectl get pod -n cinequest
 ```
 **Start API gateway proxy and send requests using Postman(or any other tools)**
 ```bash
-kubectl port-forward service/frontend -n cinequest 8080:80
+kubectl port-forward service/frontend -n cinequest 3000:80
 ```
 **Open http://localhost:8080 in your browser and try our amazing movie website~**
 #### CleanUp
