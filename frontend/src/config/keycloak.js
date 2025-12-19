@@ -23,7 +23,7 @@ export default keycloak;
 
 // ==================== Keycloak Init Options ====================
 export const keycloakInitOptions = {
-  onLoad: "check-sso", // Check if user is already logged in
+  onLoad: undefined,
   // Disable iframe check completely to avoid X-Frame-Options errors
   checkLoginIframe: false,
   checkLoginIframeInterval: -1, // Completely disable iframe polling
