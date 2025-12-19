@@ -274,8 +274,9 @@ spec:
                 - /bin/sh
                 - -c
                 - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
-            initialDelaySeconds: 150
+            initialDelaySeconds: 180
             periodSeconds: 10
+            failureThreshold: 10 # allow failure 10 times
           readinessProbe:
             exec:
               command:
